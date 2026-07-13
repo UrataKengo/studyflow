@@ -37,7 +37,7 @@ docker compose up --build
 
 ## 動作確認
 
-ブラウザで下記へアクセスしてください。
+ブラウザで下記へアクセスしてください。  
 
 ```txt
 http://localhost:8001
