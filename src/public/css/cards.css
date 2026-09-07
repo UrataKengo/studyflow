@@ -1295,3 +1295,1078 @@ h1 {
         flex-basis: 100%;
     }
 }
+
+
+/* =========================================================
+   カテゴリ：ホバーで開く / クリックで固定
+   コンパクトドロップダウン版
+========================================================= */
+
+.category-section {
+    position: relative;
+    overflow: visible;
+}
+
+/*
+ * PCでは、カテゴリ一覧を画面いっぱいに広げず
+ * 左側にコンパクトなドロップダウンとして表示する
+ */
+.category-list-panel {
+    position: absolute;
+    left: 14px;
+    right: auto;
+    top: calc(100% - 1px);
+    z-index: 80;
+
+    width: min(520px, calc(100vw - 80px));
+    max-height: 340px;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    border: 1px solid #dfe7e3;
+    border-radius: 12px;
+    background: #ffffff;
+
+    box-shadow:
+        0 16px 34px rgba(35, 55, 43, 0.16),
+        0 2px 6px rgba(35, 55, 43, 0.06);
+
+    animation: categoryDropdownIn 0.14s ease-out;
+}
+
+.category-list-panel[hidden] {
+    display: none !important;
+}
+
+/* コンパクト幅に合わせて列幅も調整 */
+.category-list-panel .category-list-head,
+.category-list-panel .category-list-row {
+    grid-template-columns: minmax(0, 1fr) 78px 88px;
+}
+
+.category-list-panel .category-row-select {
+    grid-template-columns: minmax(0, 1fr) 78px;
+}
+
+.category-list-panel .category-list-head {
+    padding-left: 16px;
+    padding-right: 12px;
+}
+
+.category-list-panel .category-all-row {
+    padding-left: 16px;
+    padding-right: 12px;
+}
+
+.category-list-panel .category-row-select {
+    padding-left: 16px;
+}
+
+.category-list-panel .category-row-actions {
+    padding-right: 10px;
+}
+
+.category-list-panel .category-row-name {
+    font-size: 13px;
+}
+
+.category-list-panel .category-row-count {
+    font-size: 12px;
+}
+
+/* 開いている時はカテゴリバーに軽く反応を出す */
+.category-section.is-category-open .category-bar {
+    background: #fbfdff;
+}
+
+.category-section.is-category-open .category-toggle-main {
+    color: #0d5cc4;
+}
+
+.category-section.is-category-pinned .category-chevron-btn {
+    background: #edf8f0;
+    border-color: #438b5a;
+}
+
+/* 選択中カテゴリのチップは一覧が閉じても残す */
+.selected-category-area {
+    position: relative;
+    z-index: 2;
+}
+
+.category-toggle-main:hover {
+    color: #0d5cc4;
+}
+
+.category-toggle-main:hover .category-bar-text small {
+    color: #6f7f8f;
+}
+
+@keyframes categoryDropdownIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/*
+ * タッチ端末ではホバーがないため、
+ * 通常のタップ開閉 + 全幅表示に戻す
+ */
+@media (hover: none), (pointer: coarse) {
+    .category-list-panel {
+        position: static;
+        width: 100%;
+        max-height: 340px;
+
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        border-radius: 0;
+
+        box-shadow: none;
+        animation: none;
+    }
+
+    .category-list-panel .category-list-head,
+    .category-list-panel .category-list-row {
+        grid-template-columns: minmax(0, 1fr) 72px 82px;
+    }
+
+    .category-list-panel .category-row-select {
+        grid-template-columns: minmax(0, 1fr) 72px;
+    }
+
+    .category-section.is-category-open {
+        border-radius: 16px;
+    }
+}
+
+/* かなり狭いPCウィンドウ用 */
+@media (hover: hover) and (pointer: fine) and (max-width: 700px) {
+    .category-list-panel {
+        left: 8px;
+        width: calc(100vw - 56px);
+    }
+}
+
+
+/* =========================================================
+   カード管理 UI 仕上げ
+   - 検索・操作を1つのツールバーに統合
+   - カテゴリ / 状態 / 復習予定を見やすく
+   - 行クリック詳細モーダル
+   - 空状態の改善
+========================================================= */
+
+/* 旧カテゴリ内の絞り込み表示はツールバー側へ集約 */
+.category-section .selected-category-area {
+    display: none;
+}
+
+.card-tools {
+    margin-bottom: 14px;
+    overflow: hidden;
+    border: 1px solid #dfe6ec;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 14px rgba(38, 58, 48, 0.05);
+}
+
+.card-tools-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 12px 14px;
+}
+
+.card-tools .search-box {
+    flex: 1;
+}
+
+.search-input-wrap {
+    position: relative;
+    width: min(440px, 100%);
+}
+
+.search-input-wrap input {
+    width: 100%;
+    padding-left: 40px;
+}
+
+.search-input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    z-index: 2;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 21px;
+    pointer-events: none;
+}
+
+.card-tools-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.toolbar-selection-btn {
+    min-height: 42px;
+}
+
+.active-filter-bar {
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 8px 14px;
+    border-top: 1px solid #edf1f4;
+    background: #fbfcfe;
+}
+
+.active-filter-items {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+    flex-wrap: wrap;
+}
+
+.active-filter-label {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.active-filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 9px 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.active-filter-category {
+    border: 1px solid #a7d7b4;
+    background: #eef9f1;
+    color: #277343;
+}
+
+.active-filter-keyword {
+    border: 1px solid #bfdbfe;
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.active-filter-chip a {
+    width: 19px;
+    height: 19px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: inherit;
+    font-size: 15px;
+}
+
+.active-filter-chip a:hover {
+    background: rgba(15, 23, 42, 0.07);
+}
+
+.active-filter-clear {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.active-filter-clear:hover {
+    color: #2563eb;
+}
+
+/* 選択中ツールバーは操作バーの直下に表示 */
+.selection-toolbar {
+    margin-bottom: 0;
+}
+
+/* テーブル */
+.card-table {
+    min-width: 1120px;
+}
+
+.card-table th {
+    font-size: 13px;
+}
+
+.card-table td {
+    font-size: 14px;
+}
+
+.card-question-cell,
+.card-answer-cell {
+    cursor: pointer;
+}
+
+.card-row:not(.is-selected):hover td {
+    background: #fafcff;
+}
+
+.category-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 120px;
+    padding: 6px 11px;
+    overflow: hidden;
+    border: 1px solid #bfdbfe;
+    border-radius: 999px;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.status-level-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 54px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.status-new {
+    background: #eaf2ff;
+    color: #2563eb;
+}
+
+.status-learning,
+.status-relearning {
+    background: #fff4d6;
+    color: #c97a00;
+}
+
+.status-review {
+    background: #e7f7ec;
+    color: #21864b;
+}
+
+.level-compact {
+    color: #475569;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.review-unlearned {
+    background: #eef1f5;
+    color: #64748b;
+}
+
+.review-overdue {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.review-today {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.review-soon {
+    background: #fff1c7;
+    color: #c97300;
+}
+
+.review-later {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.option-menu .edit-card-btn,
+.option-menu .delete-option {
+    gap: 9px;
+}
+
+.menu-icon {
+    width: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 空状態 */
+.empty-table-message {
+    height: 430px !important;
+    padding: 0 !important;
+}
+
+.empty-state {
+    min-height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 11px;
+    padding: 40px 20px;
+}
+
+.empty-state-icon {
+    width: 70px;
+    height: 70px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 34px;
+    font-weight: 800;
+}
+
+.empty-state h3 {
+    margin: 5px 0 0;
+    color: #1e293b;
+    font-size: 20px;
+}
+
+.empty-state p {
+    margin: 0 0 8px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.empty-state-reset {
+    padding: 10px 16px;
+    border: 1px solid #2563eb;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #2563eb;
+    font-weight: 800;
+}
+
+/* カード詳細モーダル */
+.card-detail-modal-box {
+    max-width: 560px;
+}
+
+.card-detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.card-detail-header h2 {
+    margin: 0;
+}
+
+.modal-close-icon {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dbe2e8;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #64748b;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.modal-close-icon:hover {
+    background: #f8fafc;
+}
+
+.card-detail-list {
+    margin: 0 0 22px;
+}
+
+.card-detail-list > div {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 16px;
+    padding: 13px 0;
+    border-bottom: 1px solid #edf1f4;
+}
+
+.card-detail-list dt {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.card-detail-list dd {
+    margin: 0;
+    color: #1f2937;
+    font-size: 14px;
+    line-height: 1.7;
+    word-break: break-word;
+}
+
+.detail-edit-btn {
+    background: #2563eb;
+}
+
+.detail-edit-btn:hover {
+    background: #1d4ed8;
+}
+
+/* 既存6行固定を保ちつつ、新しい列幅に調整 */
+.card-table th:nth-child(2),
+.card-table td:nth-child(2) {
+    width: 18%;
+}
+
+.card-table th:nth-child(3),
+.card-table td:nth-child(3) {
+    width: 24%;
+}
+
+@media (max-width: 900px) {
+    .card-tools-main {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .card-tools .search-box {
+        width: 100%;
+    }
+
+    .search-input-wrap {
+        width: 100%;
+    }
+
+    .card-tools-actions {
+        width: 100%;
+    }
+
+    .toolbar-selection-btn,
+    .small-create-card-btn {
+        flex: 1;
+    }
+
+    .active-filter-bar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+
+/* =========================================================
+   選択バー初期表示の修正
+   hidden属性を最優先で効かせる
+========================================================= */
+
+.selection-toolbar[hidden] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   操作列を廃止し、詳細モーダルへ操作を集約
+========================================================= */
+
+/* 操作列廃止後の幅調整 */
+.card-table {
+    min-width: 1040px;
+}
+
+/* 旧「最後の列=操作」用指定を打ち消す */
+.card-table th:last-child,
+.card-table td:last-child {
+    width: auto;
+    text-align: left;
+}
+
+/* 詳細モーダルの操作配置 */
+.card-detail-actions {
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.card-detail-actions-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.detail-delete-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 9px 15px;
+    border: 1px solid #f3b4b4;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #dc2626;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.detail-delete-btn:hover:not(:disabled) {
+    background: #fff3f3;
+    border-color: #ef4444;
+}
+
+.detail-delete-btn:disabled {
+    opacity: 0.45;
+    cursor: wait;
+}
+
+/* 行クリックで詳細が開くことを少し伝える */
+.card-row {
+    cursor: pointer;
+}
+
+.selection-mode .card-row {
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .card-detail-actions {
+        align-items: stretch;
+        flex-direction: column-reverse;
+    }
+
+    .card-detail-actions-right {
+        width: 100%;
+    }
+
+    .card-detail-actions-right > * {
+        flex: 1;
+    }
+
+    .detail-delete-btn {
+        width: 100%;
+    }
+}
+
+
+/* =========================================================
+   カード詳細モーダル：下部ボタン位置の最終調整
+========================================================= */
+
+.card-detail-actions {
+    width: 100%;
+    margin-top: 6px;
+    padding-top: 18px;
+    border-top: 1px solid #e8edf2;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.card-detail-actions-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.detail-delete-btn,
+.card-detail-actions .btn-secondary,
+.card-detail-actions .btn-primary {
+    min-height: 42px;
+    padding: 9px 16px;
+    border-radius: 8px;
+}
+
+.detail-delete-btn {
+    min-width: 88px;
+}
+
+.card-detail-actions .btn-secondary {
+    min-width: 84px;
+}
+
+.card-detail-actions .btn-primary {
+    min-width: 112px;
+}
+
+/* モーダル本体の下側余白も少し整える */
+.card-detail-modal-box {
+    padding-bottom: 24px;
+}
+
+@media (max-width: 600px) {
+    .card-detail-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .card-detail-actions-right {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .detail-delete-btn {
+        width: 100%;
+    }
+
+    .card-detail-actions .btn-secondary,
+    .card-detail-actions .btn-primary {
+        flex: 1;
+    }
+}
+
+
+/* =========================================================
+   カード詳細モーダル：操作順
+   閉じる → 編集する → 削除
+========================================================= */
+
+.card-detail-actions {
+    justify-content: flex-end;
+}
+
+.card-detail-actions-right {
+    margin-left: 0;
+    order: 1;
+}
+
+.detail-delete-btn {
+    order: 2;
+    margin-left: 12px;
+}
+
+/* HTML上は削除が先でも、表示上は
+   [閉じる] [編集する]   [削除] の順にする */
+.card-detail-actions-right .btn-secondary {
+    order: 1;
+}
+
+.card-detail-actions-right .detail-edit-btn {
+    order: 2;
+}
+
+@media (max-width: 600px) {
+    .card-detail-actions {
+        flex-direction: column;
+    }
+
+    .card-detail-actions-right {
+        order: 1;
+    }
+
+    .detail-delete-btn {
+        order: 2;
+        margin-left: 0;
+    }
+}
+
+
+/* =========================================================
+   カード詳細モーダル：全体バランス最終調整
+========================================================= */
+
+.card-detail-modal-box {
+    width: min(540px, calc(100vw - 40px));
+    max-width: 540px;
+    padding: 26px 28px 22px;
+    border-radius: 14px;
+}
+
+/* タイトル周辺 */
+.card-detail-header {
+    margin-bottom: 14px;
+}
+
+.card-detail-header h2 {
+    font-size: 22px;
+    line-height: 1.3;
+}
+
+.modal-close-icon {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+}
+
+/* 詳細情報：左ラベルと右内容の比率を整理 */
+.card-detail-list {
+    margin-bottom: 0;
+}
+
+.card-detail-list > div {
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 16px;
+    min-height: 48px;
+    padding: 12px 0;
+    align-items: center;
+}
+
+.card-detail-list dt {
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.card-detail-list dd {
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* 最後の情報行からボタンまでの余白 */
+.card-detail-list > div:last-child {
+    border-bottom: none;
+}
+
+/* 下部操作エリア */
+.card-detail-actions {
+    width: 100%;
+    margin-top: 16px;
+    padding-top: 18px;
+    border-top: 1px solid #e5eaf0;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0;
+}
+
+.card-detail-actions-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin: 0;
+    order: 1;
+}
+
+.detail-delete-btn {
+    order: 2;
+    margin-left: 22px;
+}
+
+/* 3ボタンの高さを統一 */
+.card-detail-actions .btn-secondary,
+.card-detail-actions .detail-edit-btn,
+.card-detail-actions .detail-delete-btn {
+    min-height: 42px;
+    height: 42px;
+    padding: 0 16px;
+    border-radius: 8px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.card-detail-actions .btn-secondary {
+    min-width: 82px;
+}
+
+.card-detail-actions .detail-edit-btn {
+    min-width: 110px;
+}
+
+.card-detail-actions .detail-delete-btn {
+    min-width: 82px;
+}
+
+/* 削除は危険操作だが、編集より目立たせすぎない */
+.detail-delete-btn {
+    border: 1px solid #f2a8a8;
+    background: #ffffff;
+    color: #dc2626;
+}
+
+.detail-delete-btn:hover:not(:disabled) {
+    border-color: #ef4444;
+    background: #fff5f5;
+}
+
+/* モバイル */
+@media (max-width: 600px) {
+    .card-detail-modal-box {
+        width: calc(100vw - 24px);
+        padding: 22px 20px 18px;
+    }
+
+    .card-detail-list > div {
+        grid-template-columns: 92px minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .card-detail-actions {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .card-detail-actions-right {
+        width: 100%;
+        order: 1;
+    }
+
+    .card-detail-actions-right > * {
+        flex: 1;
+    }
+
+    .detail-delete-btn {
+        width: 100%;
+        margin-left: 0;
+        order: 2;
+    }
+}
+
+
+/* =========================================================
+   カード詳細モーダル：文字サイズ・ボタン間隔調整
+========================================================= */
+
+/* 詳細本文を読みやすい大きさへ戻す */
+.card-detail-list dt {
+    font-size: 14px;
+    line-height: 1.55;
+}
+
+.card-detail-list dd {
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+/* タイトルも少し見やすく */
+.card-detail-header h2 {
+    font-size: 23px;
+}
+
+/* 行間も文字サイズに合わせて少し確保 */
+.card-detail-list > div {
+    min-height: 52px;
+    padding: 13px 0;
+}
+
+/* 3ボタンを均等な間隔で横並び */
+.card-detail-actions {
+    gap: 10px;
+}
+
+.card-detail-actions-right {
+    gap: 10px;
+}
+
+/* 削除だけ離していた余白を解除 */
+.detail-delete-btn {
+    margin-left: 0;
+}
+
+/* ボタン文字も少し大きく */
+.card-detail-actions .btn-secondary,
+.card-detail-actions .detail-edit-btn,
+.card-detail-actions .detail-delete-btn {
+    font-size: 14px;
+}
+
+/* モバイル時は従来どおり縦方向に整理 */
+@media (max-width: 600px) {
+    .card-detail-list dt {
+        font-size: 13px;
+    }
+
+    .card-detail-list dd {
+        font-size: 14px;
+    }
+
+    .card-detail-actions {
+        gap: 10px;
+    }
+
+    .detail-delete-btn {
+        margin-left: 0;
+    }
+}
+
+
+/* =========================================================
+   カード詳細モーダル：閉じるを左、編集・削除を右
+========================================================= */
+
+.card-detail-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+/* HTML上の右側グループを横幅いっぱいに使う */
+.card-detail-actions-right {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 閉じるを左端へ */
+.card-detail-actions-right .btn-secondary {
+    margin-right: auto;
+}
+
+/* 編集と削除は右側で均等な間隔 */
+.card-detail-actions-right .detail-edit-btn {
+    margin-left: 0;
+}
+
+.detail-delete-btn {
+    margin-left: -6px;
+}
+
+/*
+ * detail-delete-btn はHTML上では別要素なので、
+ * actions全体の右端に自然に並ぶよう調整
+ */
+.card-detail-actions {
+    gap: 10px;
+}
+
+@media (max-width: 600px) {
+    .card-detail-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .card-detail-actions-right {
+        width: 100%;
+    }
+
+    .card-detail-actions-right .btn-secondary {
+        margin-right: 0;
+    }
+
+    .detail-delete-btn {
+        width: 100%;
+        margin-left: 0;
+    }
+}

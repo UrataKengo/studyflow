@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>カード管理 | StudyFlow</title>
-    <link rel="stylesheet" href="{{ asset('css/cards.css') }}?v=20260907-selection-clean">
+    <link rel="stylesheet" href="{{ asset('css/cards.css') }}?v=20260907-detail-modal-actions">
 
     <style>
         .message-fade-out {
@@ -64,7 +64,7 @@
             });
         @endphp
 
-        <section class="category-section" id="categorySection">
+        <section class="category-section" id="categorySection" data-hover-enabled="true">
             <div class="category-bar">
                 <button type="button"
                     class="category-toggle-main"
@@ -195,40 +195,86 @@
             </div>
         </section>
 
-        <div class="card-list-header">
-            <form action="{{ route('cards.index') }}" method="GET" class="search-box">
-                @if (!empty($categoryId))
-                    <input type="hidden" name="category_id" value="{{ $categoryId }}">
-                @endif
+        <section class="card-tools">
+            <div class="card-tools-main">
+                <form action="{{ route('cards.index') }}" method="GET" class="search-box">
+                    @if (!empty($categoryId))
+                        <input type="hidden" name="category_id" value="{{ $categoryId }}">
+                    @endif
 
-                <input type="text"
-                    name="keyword"
-                    value="{{ $keyword ?? '' }}"
-                    placeholder="キーワード検索">
+                    <div class="search-input-wrap">
+                        <span class="search-input-icon" aria-hidden="true">⌕</span>
 
-                <button type="submit">
-                    検索
-                </button>
+                        <input type="text"
+                            name="keyword"
+                            value="{{ $keyword ?? '' }}"
+                            placeholder="キーワード検索（問題・解答で検索）">
+                    </div>
 
-                <a href="{{ route('cards.index', !empty($categoryId) ? ['category_id' => $categoryId] : []) }}">
-                    リセット
-                </a>
-            </form>
+                    <button type="submit">
+                        検索
+                    </button>
 
-            <button type="button" class="small-create-card-btn" onclick="openCardModal()">
-                ＋ 新規カード
-            </button>
-        </div>
+                    <a href="{{ route('cards.index', !empty($categoryId) ? ['category_id' => $categoryId] : []) }}">
+                        リセット
+                    </a>
+                </form>
 
-        <div class="selection-toolbar" id="selectionToolbar">
-            <div class="selection-start" id="selectionStart">
-                <button type="button" class="selection-mode-btn" id="selectionModeButton">
-                    <span class="selection-mode-icon">☑</span>
-                    カードを選択
-                </button>
+                <div class="card-tools-actions">
+                    <button type="button"
+                        class="selection-mode-btn toolbar-selection-btn"
+                        id="selectionModeButton">
+                        <span class="selection-mode-icon">☑</span>
+                        カードを選択
+                    </button>
+
+                    <button type="button"
+                        class="small-create-card-btn"
+                        onclick="openCardModal()">
+                        ＋ 新規カード
+                    </button>
+                </div>
             </div>
 
-            <div class="selection-active-bar" id="selectionActiveBar" hidden>
+            @if ($selectedCategory || !empty($keyword))
+                <div class="active-filter-bar">
+                    <div class="active-filter-items">
+                        <span class="active-filter-label">絞り込み中:</span>
+
+                        @if ($selectedCategory)
+                            <span class="active-filter-chip active-filter-category">
+                                {{ $selectedCategory->name }}
+
+                                <a href="{{ route('cards.index', !empty($keyword) ? ['keyword' => $keyword] : []) }}"
+                                    aria-label="カテゴリ絞り込みを解除">
+                                    ×
+                                </a>
+                            </span>
+                        @endif
+
+                        @if (!empty($keyword))
+                            <span class="active-filter-chip active-filter-keyword">
+                                「{{ $keyword }}」
+
+                                <a href="{{ route('cards.index', !empty($categoryId) ? ['category_id' => $categoryId] : []) }}"
+                                    aria-label="キーワード検索を解除">
+                                    ×
+                                </a>
+                            </span>
+                        @endif
+                    </div>
+
+                    <a href="{{ route('cards.index') }}" class="active-filter-clear">
+                        絞り込みをクリア
+                    </a>
+                </div>
+            @endif
+        </section>
+
+        <div class="selection-toolbar" id="selectionToolbar" hidden>
+            <div class="selection-start" id="selectionStart" hidden></div>
+
+            <div class="selection-active-bar" id="selectionActiveBar">
                 <div class="selection-toolbar-left">
                     <span class="selection-status-icon" aria-hidden="true">✓</span>
 
@@ -280,10 +326,10 @@
                         </th>
                         <th>問題</th>
                         <th>解答</th>
-                        <th>レベル</th>
+                        <th>カテゴリ</th>
+                        <th>状態 / レベル</th>
                         <th>学習回数</th>
                         <th>次回復習日</th>
-                        <th></th>
                     </tr>
                 </thead>
 
@@ -302,16 +348,56 @@
 
                             $reviewDate = $card->next_review_date
                                 ? $card->next_review_date->copy()->startOfDay()
-                                : today();
+                                : null;
 
-                            $daysLeft = (int) now()
-                                ->startOfDay()
-                                ->diffInDays($reviewDate, false);
+                            $daysLeft = $reviewDate
+                                ? (int) now()->startOfDay()->diffInDays($reviewDate, false)
+                                : null;
 
-                            $cardCategoryId = $card->categories->first()?->id ?? '';
+                            $firstCategory = $card->categories->first();
+                            $cardCategoryId = $firstCategory?->id ?? '';
+                            $cardCategoryName = $firstCategory?->name ?? '未分類';
+
+                            $statusLabels = [
+                                'new' => '新規',
+                                'learning' => '学習中',
+                                'review' => '復習',
+                                'relearning' => '復習中',
+                            ];
+
+                            $statusKey = $card->status ?? 'new';
+                            $statusLabel = $statusLabels[$statusKey] ?? '学習中';
+
+                            if ($reviewDate === null) {
+                                $reviewLabel = '未学習';
+                                $reviewClass = 'review-unlearned';
+                            } elseif ($daysLeft < 0) {
+                                $reviewLabel = abs($daysLeft) . '日超過';
+                                $reviewClass = 'review-overdue';
+                            } elseif ($daysLeft === 0) {
+                                $reviewLabel = '今日';
+                                $reviewClass = 'review-today';
+                            } elseif ($daysLeft === 1) {
+                                $reviewLabel = '明日';
+                                $reviewClass = 'review-soon';
+                            } else {
+                                $reviewLabel = $daysLeft . '日後';
+                                $reviewClass = 'review-later';
+                            }
                         @endphp
 
-                        <tr class="card-row">
+                        <tr class="card-row"
+                            data-question="{{ $card->question }}"
+                            data-answer="{{ $card->answer }}"
+                            data-category="{{ $cardCategoryName }}"
+                            data-status="{{ $statusLabel }}"
+                            data-level="Lv.{{ $currentLevel }} {{ $levelNames[$currentLevel] }}"
+                            data-study-count="{{ $card->study_count }}回"
+                            data-review-label="{{ $reviewLabel }}"
+                            data-review-date="{{ $reviewDate ? $reviewDate->format('Y-m-d') : '未設定' }}"
+                            data-update-url="{{ route('cards.update', $card->id) }}"
+                            data-delete-url="{{ route('cards.destroy', $card->id) }}"
+                            data-category-id="{{ $cardCategoryId }}">
                             <td class="selection-column selection-checkbox-cell">
                                 <input type="checkbox"
                                     class="card-checkbox card-select-checkbox"
@@ -323,87 +409,71 @@
                                     aria-label="{{ $card->question }} を選択">
                             </td>
 
-                            <td>{{ $card->question }}</td>
-                            <td>{{ $card->answer }}</td>
+                            <td class="card-question-cell">
+                                {{ $card->question }}
+                            </td>
+
+                            <td class="card-answer-cell">
+                                {{ $card->answer }}
+                            </td>
 
                             <td>
-                                <span class="level-badge level-{{ $currentLevel }}">
-                                    <span class="level-number">
-                                        Lv.{{ $currentLevel }}
+                                <span class="category-badge">
+                                    {{ $cardCategoryName }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="status-level-wrap">
+                                    <span class="status-badge status-{{ $statusKey }}">
+                                        {{ $statusLabel }}
                                     </span>
 
-                                    <span class="level-name">
-                                        {{ $levelNames[$currentLevel] }}
+                                    <span class="level-compact">
+                                        Lv.{{ $currentLevel }}
                                     </span>
-                                </span>
+                                </div>
                             </td>
 
                             <td>{{ $card->study_count }} 回</td>
 
                             <td>
-                                @if ($daysLeft < 0)
-                                    <span class="review-badge review-overdue">
-                                        期限切れ
-                                    </span>
-                                @elseif ($daysLeft === 0)
-                                    <span class="review-badge review-today">
-                                        今日
-                                    </span>
-                                @elseif ($daysLeft <= 3)
-                                    <span class="review-badge review-soon">
-                                        {{ $daysLeft }}日後
-                                    </span>
-                                @else
-                                    <span class="review-badge review-later">
-                                        {{ $daysLeft }}日後
-                                    </span>
-                                @endif
+                                <span class="review-badge {{ $reviewClass }}">
+                                    {{ $reviewLabel }}
+                                </span>
 
                                 <div class="review-date">
-                                    {{ $card->next_review_date ? $card->next_review_date->format('Y-m-d') : '-' }}
-                                </div>
-                            </td>
-
-                            <td>
-                                <div class="option-wrapper">
-                                    <button type="button"
-                                        class="option-btn"
-                                        aria-label="カードの操作メニュー"
-                                        aria-expanded="false">
-                                        ︙
-                                    </button>
-
-                                    <div class="option-menu">
-                                        <button type="button"
-                                            class="edit-card-btn"
-                                            data-question="{{ $card->question }}"
-                                            data-answer="{{ $card->answer }}"
-                                            data-category-id="{{ $cardCategoryId }}"
-                                            data-update-url="{{ route('cards.update', $card->id) }}">
-                                            編集
-                                        </button>
-
-                                        <form action="{{ route('cards.destroy', $card->id) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-
-                                            <input type="hidden" name="return_category_id" value="{{ $categoryId ?? '' }}">
-                                            <input type="hidden" name="return_keyword" value="{{ $keyword ?? '' }}">
-
-                                            <button type="submit"
-                                                class="delete-option"
-                                                onclick="return confirm('このカードを削除しますか？')">
-                                                削除
-                                            </button>
-                                        </form>
-                                    </div>
+                                    {{ $reviewDate ? $reviewDate->format('Y-m-d') : '—' }}
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
                             <td colspan="7" class="empty-table-message">
-                                カードがありません。
+                                @if (!empty($keyword) || !empty($categoryId))
+                                    <div class="empty-state">
+                                        <div class="empty-state-icon">⌕</div>
+                                        <h3>該当するカードがありません</h3>
+                                        <p>検索条件やカテゴリを変更してみてください。</p>
+
+                                        <a href="{{ route('cards.index') }}"
+                                            class="empty-state-reset">
+                                            検索条件をリセット
+                                        </a>
+                                    </div>
+                                @else
+                                    <div class="empty-state">
+                                        <div class="empty-state-icon">□</div>
+                                        <h3>まだカードがありません</h3>
+                                        <p>「＋ 新規カード」から最初のカードを作成しましょう。</p>
+
+                                        <button type="button"
+                                            class="small-create-card-btn"
+                                            onclick="openCardModal()">
+                                            ＋ 新規カード
+                                        </button>
+                                    </div>
+                                @endif
                             </td>
                         </tr>
                     @endforelse
@@ -411,6 +481,76 @@
             </table>
         </div>
     </main>
+
+    {{-- カード詳細モーダル --}}
+    <div id="cardDetailModal" class="modal-bg">
+        <div class="modal-box card-detail-modal-box">
+            <div class="card-detail-header">
+                <h2>カード詳細</h2>
+
+                <button type="button"
+                    class="modal-close-icon"
+                    id="cardDetailCloseButton"
+                    aria-label="カード詳細を閉じる">
+                    ×
+                </button>
+            </div>
+
+            <dl class="card-detail-list">
+                <div>
+                    <dt>問題</dt>
+                    <dd id="detailQuestion"></dd>
+                </div>
+
+                <div>
+                    <dt>解答</dt>
+                    <dd id="detailAnswer"></dd>
+                </div>
+
+                <div>
+                    <dt>カテゴリ</dt>
+                    <dd><span class="category-badge" id="detailCategory"></span></dd>
+                </div>
+
+                <div>
+                    <dt>状態 / レベル</dt>
+                    <dd id="detailStatusLevel"></dd>
+                </div>
+
+                <div>
+                    <dt>学習回数</dt>
+                    <dd id="detailStudyCount"></dd>
+                </div>
+
+                <div>
+                    <dt>次回復習日</dt>
+                    <dd id="detailReview"></dd>
+                </div>
+            </dl>
+
+            <div class="modal-actions card-detail-actions">
+                <button type="button"
+                    class="detail-delete-btn"
+                    id="cardDetailDeleteButton">
+                    🗑 削除
+                </button>
+
+                <div class="card-detail-actions-right">
+                    <button type="button"
+                        class="btn-secondary"
+                        id="cardDetailCloseBottom">
+                        閉じる
+                    </button>
+
+                    <button type="button"
+                        class="btn-primary detail-edit-btn"
+                        id="cardDetailEditButton">
+                        ✎ 編集する
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     {{-- 新規カード作成モーダル --}}
     <div id="cardCreateModal" class="modal-bg">
@@ -614,6 +754,7 @@
             const categoryModal = document.getElementById('categoryCreateModal');
             const editCategoryModal = document.getElementById('categoryEditModal');
             const bulkCategoryModal = document.getElementById('bulkCategoryModal');
+            const cardDetailModal = document.getElementById('cardDetailModal');
 
             const editCardForm = document.getElementById('cardEditForm');
             const editQuestion = document.getElementById('edit_question');
@@ -622,6 +763,19 @@
 
             const categoryEditForm = document.getElementById('categoryEditForm');
             const editCategoryName = document.getElementById('edit_category_name');
+
+            const detailQuestion = document.getElementById('detailQuestion');
+            const detailAnswer = document.getElementById('detailAnswer');
+            const detailCategory = document.getElementById('detailCategory');
+            const detailStatusLevel = document.getElementById('detailStatusLevel');
+            const detailStudyCount = document.getElementById('detailStudyCount');
+            const detailReview = document.getElementById('detailReview');
+            const cardDetailCloseButton = document.getElementById('cardDetailCloseButton');
+            const cardDetailCloseBottom = document.getElementById('cardDetailCloseBottom');
+            const cardDetailEditButton = document.getElementById('cardDetailEditButton');
+            const cardDetailDeleteButton = document.getElementById('cardDetailDeleteButton');
+
+            let currentDetailCard = null;
 
 
             /*
@@ -738,6 +892,99 @@
                 editCategoryModal.classList.remove('show');
             };
 
+            function openCardDetail(row) {
+                currentDetailCard = row;
+
+                detailQuestion.textContent = row.dataset.question ?? '';
+                detailAnswer.textContent = row.dataset.answer ?? '';
+                detailCategory.textContent = row.dataset.category ?? '未分類';
+                detailStatusLevel.textContent =
+                    (row.dataset.status ?? '') + ' / ' + (row.dataset.level ?? '');
+                detailStudyCount.textContent = row.dataset.studyCount ?? '0回';
+                detailReview.textContent =
+                    (row.dataset.reviewLabel ?? '') +
+                    '（' + (row.dataset.reviewDate ?? '未設定') + '）';
+
+                cardDetailModal.classList.add('show');
+            }
+
+            function closeCardDetail() {
+                cardDetailModal.classList.remove('show');
+                currentDetailCard = null;
+            }
+
+            cardDetailCloseButton.addEventListener('click', closeCardDetail);
+            cardDetailCloseBottom.addEventListener('click', closeCardDetail);
+
+            cardDetailEditButton.addEventListener('click', function () {
+                if (!currentDetailCard) {
+                    return;
+                }
+
+                const detailCard = currentDetailCard;
+
+                closeCardDetail();
+
+                openEditCardModal(
+                    detailCard.dataset.question,
+                    detailCard.dataset.answer,
+                    detailCard.dataset.categoryId,
+                    detailCard.dataset.updateUrl
+                );
+            });
+
+            cardDetailDeleteButton.addEventListener('click', async function () {
+                if (!currentDetailCard) {
+                    return;
+                }
+
+                const question = currentDetailCard.dataset.question ?? 'このカード';
+
+                if (!confirm('「' + question + '」を削除しますか？\nこの操作は元に戻せません。')) {
+                    return;
+                }
+
+                const csrfToken = document
+                    .querySelector('meta[name="csrf-token"]')
+                    .getAttribute('content');
+
+                cardDetailDeleteButton.disabled = true;
+                cardDetailDeleteButton.textContent = '削除中...';
+
+                try {
+                    const response = await fetch(
+                        currentDetailCard.dataset.deleteUrl,
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type':
+                                    'application/x-www-form-urlencoded;charset=UTF-8',
+                                'X-CSRF-TOKEN': csrfToken,
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: new URLSearchParams({
+                                _token: csrfToken,
+                                _method: 'DELETE',
+                                return_category_id: @json($categoryId ?? ''),
+                                return_keyword: @json($keyword ?? '')
+                            })
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error('カードの削除に失敗しました。');
+                    }
+
+                    window.location.reload();
+
+                } catch (error) {
+                    alert('カードを削除できませんでした。\nページを更新して確認してください。');
+
+                    cardDetailDeleteButton.disabled = false;
+                    cardDetailDeleteButton.textContent = '🗑 削除';
+                }
+            });
+
             function closeAllMenus() {
                 document
                     .querySelectorAll('.option-menu')
@@ -825,7 +1072,23 @@
             const categoryListPanel =
                 document.getElementById('categoryListPanel');
 
-            function setCategoryPanel(open, saveState = true) {
+            const categorySection =
+                document.getElementById('categorySection');
+
+            const hasSelectedCategory = @json(!empty($categoryId));
+            const hoverMedia = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+            let categoryPinnedOpen = false;
+            let categoryHoverOpen = false;
+            let categoryCloseTimer = null;
+
+            function isDesktopHoverMode() {
+                return hoverMedia.matches;
+            }
+
+            function renderCategoryPanel() {
+                const open = categoryPinnedOpen || categoryHoverOpen;
+
                 categoryListPanel.hidden = !open;
 
                 categoryToggleButton.setAttribute(
@@ -838,51 +1101,112 @@
                     open ? 'true' : 'false'
                 );
 
-                categoryChevronButton.textContent = open ? '▲' : '▼';
+                categoryChevronButton.textContent =
+                    categoryPinnedOpen ? '▲' : (open ? '▲' : '▼');
 
                 categoryChevronButton.setAttribute(
                     'aria-label',
-                    open ? 'カテゴリ一覧を閉じる' : 'カテゴリ一覧を開く'
+                    categoryPinnedOpen
+                        ? 'カテゴリ一覧の固定を解除'
+                        : (open ? 'カテゴリ一覧を閉じる' : 'カテゴリ一覧を開く')
                 );
 
-                if (saveState) {
-                    localStorage.setItem(
-                        'studyflowCategoryPanelOpen',
-                        open ? '1' : '0'
-                    );
-                }
+                categorySection.classList.toggle(
+                    'is-category-open',
+                    open
+                );
+
+                categorySection.classList.toggle(
+                    'is-category-pinned',
+                    categoryPinnedOpen
+                );
             }
 
-            function toggleCategoryPanel() {
-                setCategoryPanel(categoryListPanel.hidden);
+            function openCategoryByHover() {
+                if (!isDesktopHoverMode() || categoryPinnedOpen) {
+                    return;
+                }
+
+                if (categoryCloseTimer) {
+                    clearTimeout(categoryCloseTimer);
+                    categoryCloseTimer = null;
+                }
+
+                categoryHoverOpen = true;
+                renderCategoryPanel();
+            }
+
+            function scheduleCategoryHoverClose() {
+                if (!isDesktopHoverMode() || categoryPinnedOpen) {
+                    return;
+                }
+
+                if (categoryCloseTimer) {
+                    clearTimeout(categoryCloseTimer);
+                }
+
+                categoryCloseTimer = window.setTimeout(function () {
+                    categoryHoverOpen = false;
+                    renderCategoryPanel();
+                }, 120);
+            }
+
+            function toggleCategoryPinned() {
+                categoryPinnedOpen = !categoryPinnedOpen;
+                categoryHoverOpen = false;
+                renderCategoryPanel();
             }
 
             /*
-             * カテゴリ一覧の開閉状態を保持
-             * ・前回開いていた場合は、ページ再読み込み後も開いたまま
-             * ・カテゴリ絞り込み中は必ず開く
+             * 初期状態
+             * ・PC: 閉じた状態。ホバーで一時表示
+             * ・クリック: 開いた状態を固定
+             * ・スマホ/タブレット: タップで開閉
+             * ・選択中カテゴリはチップのみ常時表示
              */
-            const hasSelectedCategory = @json(!empty($categoryId));
-            const savedCategoryPanelState =
-                localStorage.getItem('studyflowCategoryPanelOpen');
+            categoryPinnedOpen = false;
+            categoryHoverOpen = false;
+            renderCategoryPanel();
 
-            if (hasSelectedCategory) {
-                setCategoryPanel(true, false);
-            } else if (savedCategoryPanelState === '1') {
-                setCategoryPanel(true, false);
-            } else {
-                setCategoryPanel(false, false);
-            }
+            categorySection.addEventListener('mouseenter', function () {
+                openCategoryByHover();
+            });
 
-            categoryToggleButton.addEventListener(
-                'click',
-                toggleCategoryPanel
-            );
+            categorySection.addEventListener('mouseleave', function () {
+                scheduleCategoryHoverClose();
+            });
 
-            categoryChevronButton.addEventListener(
-                'click',
-                toggleCategoryPanel
-            );
+            categoryListPanel.addEventListener('mouseenter', function () {
+                openCategoryByHover();
+            });
+
+            categoryListPanel.addEventListener('mouseleave', function () {
+                scheduleCategoryHoverClose();
+            });
+
+            categoryToggleButton.addEventListener('click', function () {
+                if (isDesktopHoverMode()) {
+                    toggleCategoryPinned();
+                    return;
+                }
+
+                categoryPinnedOpen = !categoryPinnedOpen;
+                renderCategoryPanel();
+            });
+
+            categoryChevronButton.addEventListener('click', function (event) {
+                event.stopPropagation();
+
+                categoryPinnedOpen = !categoryPinnedOpen;
+                categoryHoverOpen = false;
+                renderCategoryPanel();
+            });
+
+            hoverMedia.addEventListener('change', function () {
+                categoryHoverOpen = false;
+                categoryPinnedOpen = false;
+                renderCategoryPanel();
+            });
 
             document.addEventListener('click', closeAllMenus);
 
@@ -891,7 +1215,8 @@
                 editCardModal,
                 categoryModal,
                 editCategoryModal,
-                bulkCategoryModal
+                bulkCategoryModal,
+                cardDetailModal
             ].forEach(function (modal) {
                 modal.addEventListener('click', function (event) {
                     if (event.target === modal) {
@@ -900,6 +1225,7 @@
                 });
             });
 
+            const selectionToolbar = document.getElementById('selectionToolbar');
             const selectionModeButton = document.getElementById('selectionModeButton');
             const selectionStart = document.getElementById('selectionStart');
             const selectionActiveBar = document.getElementById('selectionActiveBar');
@@ -960,6 +1286,7 @@
             function enterSelectionMode() {
                 selectionMode = true;
                 document.body.classList.add('selection-mode');
+                selectionToolbar.hidden = false;
                 selectionStart.hidden = true;
                 selectionActiveBar.hidden = false;
                 closeAllMenus();
@@ -973,8 +1300,9 @@
                     'has-card-selection'
                 );
 
-                selectionStart.hidden = false;
-                selectionActiveBar.hidden = true;
+                selectionToolbar.hidden = true;
+                selectionStart.hidden = true;
+                selectionActiveBar.hidden = false;
 
                 cardCheckboxes.forEach(function (checkbox) {
                     checkbox.checked = false;
@@ -1008,10 +1336,6 @@
 
                 if (row) {
                     row.addEventListener('click', function (event) {
-                        if (!selectionMode) {
-                            return;
-                        }
-
                         if (
                             event.target.closest(
                                 'input, button, a, form, .option-wrapper'
@@ -1020,8 +1344,13 @@
                             return;
                         }
 
-                        checkbox.checked = !checkbox.checked;
-                        updateSelectionState();
+                        if (selectionMode) {
+                            checkbox.checked = !checkbox.checked;
+                            updateSelectionState();
+                            return;
+                        }
+
+                        openCardDetail(row);
                     });
                 }
             });
@@ -1054,6 +1383,7 @@
 
                 if (selected.length === 0) {
                     bulkCategoryModal.classList.remove('show');
+                    cardDetailModal.classList.remove('show');
                     return;
                 }
 
