@@ -1,0 +1,867 @@
+/* =========================
+   ダッシュボード専用
+========================= */
+
+.dashboard-message {
+    margin-top: -10px;
+    margin-bottom: 28px;
+    color: #667085;
+    font-size: 15px;
+}
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: 1.15fr repeat(3, 1fr);
+    grid-template-rows: auto auto;
+    gap: 18px;
+    align-items: stretch;
+}
+
+.dashboard-card {
+    background: #ffffff;
+    border: 1px solid #e3e7e5;
+    border-radius: 16px;
+    padding: 28px 24px;
+    box-shadow: 0 6px 18px rgba(42, 66, 52, 0.07);
+    text-align: left;
+    min-height: 170px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(42, 66, 52, 0.11);
+}
+
+.dashboard-card h3 {
+    margin: 0 0 20px;
+    font-size: 18px;
+    color: #27312c;
+}
+
+.dashboard-card p {
+    margin: 12px 0 0;
+    color: #68726d;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.dashboard-number {
+    margin: 0;
+    font-size: 48px;
+    line-height: 1;
+    font-weight: 700;
+    color: #2f7d46;
+}
+
+.dashboard-number span {
+    margin-left: 6px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #445149;
+}
+
+/* 今日の学習 */
+.dashboard-main-card {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    min-height: 360px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 36px;
+    background: linear-gradient(145deg, #ffffff 0%, #f3faf4 100%);
+}
+
+.dashboard-main-card h3 {
+    font-size: 21px;
+}
+
+.dashboard-main-card .dashboard-number {
+    font-size: 66px;
+    margin: 10px 0 12px;
+}
+
+.dashboard-main-card .study-start-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 24px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #4f9564, #34784a);
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    box-sizing: border-box;
+    box-shadow: 0 5px 12px rgba(52, 120, 74, 0.22);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-main-card .study-start-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(52, 120, 74, 0.28);
+}
+
+/* 上段3枚 */
+.dashboard-card:nth-child(2) {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.dashboard-card:nth-child(3) {
+    grid-column: 3;
+    grid-row: 1;
+}
+
+.dashboard-card:nth-child(4) {
+    grid-column: 4;
+    grid-row: 1;
+}
+
+/* 下段2枚 */
+.dashboard-card:nth-child(5) {
+    grid-column: 2 / span 2;
+    grid-row: 2;
+}
+
+.dashboard-card:nth-child(6) {
+    grid-column: 4;
+    grid-row: 2;
+}
+
+/* カードごとの色 */
+.dashboard-card:nth-child(2) .dashboard-number {
+    color: #2377c9;
+}
+
+.dashboard-card:nth-child(3) .dashboard-number {
+    color: #e39a14;
+}
+
+.dashboard-card:nth-child(4) .dashboard-number {
+    color: #7a5bd0;
+}
+
+.dashboard-card:nth-child(5) .dashboard-number {
+    color: #2f7d46;
+}
+
+.dashboard-card:nth-child(6) .dashboard-number {
+    color: #df4058;
+}
+
+/* レスポンシブ */
+@media (max-width: 1200px) {
+    .dashboard-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: auto;
+    }
+
+    .dashboard-main-card,
+    .dashboard-card:nth-child(2),
+    .dashboard-card:nth-child(3),
+    .dashboard-card:nth-child(4),
+    .dashboard-card:nth-child(5),
+    .dashboard-card:nth-child(6) {
+        grid-column: auto;
+        grid-row: auto;
+    }
+
+    .dashboard-main-card {
+        min-height: 250px;
+    }
+}
+
+@media (max-width: 700px) {
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-card {
+        min-height: auto;
+    }
+
+    .dashboard-main-card {
+        min-height: auto;
+    }
+}
+
+/* =========================
+   ダッシュボード見た目調整
+========================= */
+
+/* 通常カードの中身を整える */
+.dashboard-card:not(.dashboard-main-card) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* 通常カードの数字を大きく */
+.dashboard-card:not(.dashboard-main-card) .dashboard-number {
+    font-size: 42px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+
+/* 左のメインカード */
+.dashboard-main-card {
+    justify-content: space-between;
+}
+
+.dashboard-main-card .dashboard-number {
+    font-size: 72px;
+    color: #3f7f52;
+}
+
+/* 各カード見出し */
+.dashboard-card h3 {
+    position: relative;
+    padding-left: 48px;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+}
+
+/* 丸いアイコン風装飾 */
+.dashboard-card h3::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #e9f5eb;
+}
+
+/* 今日の学習 */
+.dashboard-main-card h3::before {
+    background: #dff1e3;
+}
+
+/* 新規カード */
+.dashboard-card:nth-child(2) h3::before {
+    background: #e1efff;
+}
+
+/* 学習中 */
+.dashboard-card:nth-child(3) h3::before {
+    background: #fff1d5;
+}
+
+/* 復習 */
+.dashboard-card:nth-child(4) h3::before {
+    background: #ece5ff;
+}
+
+/* 今日の学習回数 */
+.dashboard-card:nth-child(5) h3::before {
+    background: #e2f3e5;
+}
+
+/* 正答率 */
+.dashboard-card:nth-child(6) h3::before {
+    background: #ffe4e8;
+}
+
+/* 説明文 */
+.dashboard-card p:not(.dashboard-number) {
+    color: #7a827e;
+    font-size: 14px;
+}
+
+/* 数字と単位を横並びに */
+.dashboard-number {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+/* メインカードだけ説明文との余白 */
+.dashboard-main-card p:not(.dashboard-number) {
+    margin-top: 18px;
+}
+
+/* 下段カードを少し広めに */
+.dashboard-card:nth-child(5),
+.dashboard-card:nth-child(6) {
+    min-height: 150px;
+}
+
+.dashboard-icon {
+    position: absolute;
+    left: 9px;
+    z-index: 1;
+    font-size: 18px;
+    line-height: 1;
+}
+
+/* =========================
+   学習グラフ
+========================= */
+
+.dashboard-chart-card {
+    margin-top: 22px;
+    background: #ffffff;
+    border: 1px solid #e3e7e5;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 6px 18px rgba(42, 66, 52, 0.07);
+}
+
+.dashboard-chart-card h2 {
+    margin: 0 0 24px;
+    font-size: 19px;
+    color: #27312c;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 230px;
+}
+
+/* =========================
+   ダッシュボード下段
+========================= */
+
+.dashboard-bottom-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 20px;
+    margin-top: 22px;
+}
+
+.dashboard-chart-card,
+.dashboard-status-card {
+    background: #ffffff;
+    border: 1px solid #e3e7e5;
+    border-radius: 16px;
+    padding: 26px;
+    box-shadow: 0 6px 18px rgba(42, 66, 52, 0.07);
+}
+
+.dashboard-chart-card {
+    margin-top: 0;
+}
+
+.dashboard-chart-card h2,
+.dashboard-status-card h2 {
+    margin: 0 0 22px;
+    color: #27312c;
+    font-size: 19px;
+}
+
+.status-chart-area {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.status-chart-container {
+    position: relative;
+    width: 210px;
+    height: 210px;
+    flex-shrink: 0;
+}
+
+.status-list {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.status-item {
+    display: grid;
+    grid-template-columns: 14px 1fr auto;
+    align-items: center;
+    gap: 9px;
+    font-size: 14px;
+    color: #59635e;
+}
+
+.status-item strong {
+    color: #27312c;
+}
+
+.status-dot {
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+}
+
+.status-new {
+    background: #4f9cf9;
+}
+
+.status-learning {
+    background: #f3b33d;
+}
+
+.status-review {
+    background: #8b6de0;
+}
+
+.status-other {
+    background: #d9dedb;
+}
+
+.status-total {
+    margin: 18px 0 0;
+    padding-top: 16px;
+    border-top: 1px solid #edf0ee;
+    color: #67716c;
+    font-size: 14px;
+    text-align: center;
+}
+
+@media (max-width: 1050px) {
+    .dashboard-bottom-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .status-chart-area {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .status-chart-area {
+        flex-direction: column;
+    }
+
+    .status-list {
+        width: 100%;
+    }
+}
+
+/* =========================
+   上部ヘッダー
+========================= */
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 40px;
+    background: #ffffff;
+    border-bottom: 1px solid #e3e7e5;
+}
+
+.topbar-logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2f7d46;
+}
+
+.logout-btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #667085;
+    font-size: 14px;
+    cursor: pointer;
+    border: 1px solid #d9dedb;
+}
+
+.logout-btn:hover {
+    background: #f7f8f7;
+}
+
+
+/* =========================
+   サイドバー廃止後のレイアウト
+========================= */
+
+.layout {
+    display: block;
+}
+
+.content {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+.card-list-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 18px;
+    padding: 13px 18px;
+    border-radius: 10px;
+    background: #f3f7f4;
+    color: #2f7d46;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    border: 1px solid #d9e7dd;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.card-list-btn:hover {
+    background: #e8f2eb;
+    transform: translateY(-1px);
+}
+
+/* =========================
+   ダッシュボード再整理
+========================= */
+
+.dashboard-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+
+/* 今日の学習 */
+.dashboard-main-card {
+    min-height: auto;
+    display: block;
+    padding: 34px;
+}
+
+.study-complete-message {
+    margin-top: 24px !important;
+    padding: 14px 18px;
+    border-radius: 10px;
+    background: #eef7f0;
+    color: #2f7d46 !important;
+    font-weight: 700;
+    text-align: center;
+}
+
+
+/* セクション */
+.dashboard-section {
+    background: #ffffff;
+    border: 1px solid #e3e7e5;
+    border-radius: 16px;
+    padding: 26px;
+    box-shadow: 0 6px 18px rgba(42, 66, 52, 0.07);
+}
+
+.dashboard-section-title {
+    margin: 0 0 20px;
+    font-size: 19px;
+    color: #27312c;
+}
+
+
+/* 現在の学習状況 */
+.dashboard-status-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.summary-card {
+    padding: 22px;
+    border-radius: 12px;
+    background: #f8faf9;
+}
+
+.summary-card h3 {
+    margin: 0 0 14px;
+    font-size: 16px;
+    color: #3d4742;
+}
+
+.summary-card p {
+    margin: 8px 0 0;
+    color: #747d78;
+    font-size: 14px;
+}
+
+.summary-card .dashboard-number {
+    margin: 0;
+    font-size: 38px;
+}
+
+.summary-new .dashboard-number {
+    color: #2377c9;
+}
+
+.summary-learning .dashboard-number {
+    color: #e39a14;
+}
+
+.summary-review .dashboard-number {
+    color: #7a5bd0;
+}
+
+
+/* 今日の実績 */
+.dashboard-performance {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.performance-card {
+    padding: 24px;
+    border-radius: 12px;
+    background: #f8faf9;
+}
+
+.performance-card h3 {
+    margin: 0 0 16px;
+    font-size: 16px;
+    color: #3d4742;
+}
+
+.performance-card .dashboard-number {
+    margin: 0;
+    font-size: 42px;
+}
+
+
+/* スマホ対応 */
+@media (max-width: 700px) {
+
+    .dashboard-status-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-performance {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* =========================
+   学習データ
+========================= */
+
+.dashboard-data-title {
+    margin: 34px 0 16px;
+    font-size: 21px;
+    color: #27312c;
+}
+
+/* =========================
+   ヘッダー仕上げ
+========================= */
+
+.topbar {
+    padding: 20px 40px;
+}
+
+.topbar-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.topbar-logo {
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #2f7d46;
+}
+
+.topbar-tagline {
+    margin: 0;
+    font-size: 13px;
+    color: #8a938e;
+    letter-spacing: 0.02em;
+}
+
+.logout-btn {
+    padding: 9px 16px;
+    background: transparent;
+    border: 1px solid #dce2df;
+    border-radius: 8px;
+    color: #68726d;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background: #f5f7f6;
+    color: #3f4944;
+}
+
+@media (max-width: 600px) {
+
+    .topbar {
+        padding: 16px 20px;
+    }
+
+    .topbar-tagline {
+        font-size: 11px;
+    }
+
+}
+
+/* =========================
+   ヘッダーレイアウト修正
+========================= */
+
+body {
+    margin: 0;
+}
+
+.topbar {
+    width: 100%;
+    box-sizing: border-box;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 20px 40px;
+
+    background: #ffffff;
+    border-bottom: 1px solid #e3e7e5;
+}
+
+.topbar-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.topbar form {
+    margin: 0;
+}
+
+.layout {
+    display: block;
+    width: 100%;
+}
+
+.content {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+/* cards.css の横並びレイアウトを解除 */
+body {
+    display: block;
+    margin: 0;
+}
+
+/* =========================
+   クイックアクション（案3・確定版）
+   cards.css のリンク装飾より優先して適用
+========================= */
+.content .dashboard-quick-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin: 0 0 24px;
+}
+
+.content .dashboard-quick-actions .quick-action {
+    all: unset;
+    min-height: 88px;
+    padding: 18px 22px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.content .dashboard-quick-actions .quick-action:hover {
+    transform: translateY(-2px);
+}
+
+.content .dashboard-quick-actions .quick-action-study {
+    background: linear-gradient(135deg, #4f9564, #34784a);
+    color: #ffffff;
+    box-shadow: 0 5px 14px rgba(52, 120, 74, 0.20);
+}
+
+.content .dashboard-quick-actions .quick-action-study:hover {
+    box-shadow: 0 8px 18px rgba(52, 120, 74, 0.27);
+}
+
+.content .dashboard-quick-actions .quick-action-cards {
+    background: #ffffff;
+    color: #2f7d46;
+    border: 1px solid #cfe0d4;
+    box-shadow: 0 4px 12px rgba(42, 66, 52, 0.05);
+}
+
+.content .dashboard-quick-actions .quick-action-cards:hover {
+    background: #f6faf7;
+    box-shadow: 0 7px 16px rgba(42, 66, 52, 0.09);
+}
+
+.content .dashboard-quick-actions .quick-action-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.content .dashboard-quick-actions .quick-action-study .quick-action-icon {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.content .dashboard-quick-actions .quick-action-cards .quick-action-icon {
+    background: #eef7f0;
+}
+
+.content .dashboard-quick-actions .quick-action-text {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.content .dashboard-quick-actions .quick-action-text strong {
+    display: block;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: inherit;
+}
+
+.content .dashboard-quick-actions .quick-action-text small {
+    display: block;
+    font-size: 12px;
+    line-height: 1.4;
+    color: inherit;
+    opacity: 0.82;
+}
+
+.content .dashboard-quick-actions .quick-action-arrow {
+    flex-shrink: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: inherit;
+}
+
+@media (max-width: 700px) {
+    .content .dashboard-quick-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .content .dashboard-quick-actions .quick-action {
+        min-height: 80px;
+        padding: 16px 18px;
+    }
+}

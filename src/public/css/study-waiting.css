@@ -1,0 +1,142 @@
+/* StudyFlow 学習画面 - 待機中UI仕上げ */
+
+/* 学習中カウントの補足 */
+.count-box {
+    position: relative;
+}
+
+.count-note {
+    display: block;
+    margin-top: 3px;
+    color: #e58a00;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* 待機中カード */
+.study-waiting {
+    text-align: center;
+}
+
+.study-waiting .state-icon {
+    margin-bottom: 18px;
+    font-size: 42px;
+    line-height: 1;
+}
+
+.study-waiting h2 {
+    margin-bottom: 18px;
+}
+
+.study-waiting > p {
+    line-height: 1.9;
+}
+
+.study-waiting .state-subtext {
+    margin-top: 10px;
+    color: #8492a3;
+}
+
+/* カウントダウン */
+.study-waiting .countdown-area {
+    width: min(300px, 100%);
+    margin: 28px auto 0;
+    padding: 22px 22px 20px;
+    border-radius: 15px;
+    background: #fff7ed;
+}
+
+.study-waiting .countdown-area > p {
+    margin: 0 0 10px;
+    color: #9a4b13;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.study-waiting #countdown {
+    color: #f28b00;
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    line-height: 1.2;
+}
+
+.study-waiting .next-review-time {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #f1cfa7;
+    color: #a85a22;
+    font-size: 12px;
+}
+
+.study-waiting .next-review-time strong {
+    margin-left: 5px;
+    color: #ef8b00;
+    font-size: 14px;
+}
+
+/* 待機情報＋今日の回答 */
+.waiting-summary {
+    width: min(760px, 100%);
+    min-height: 58px;
+    margin: 24px auto 0;
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border: 1px solid #dbe4ee;
+    border-radius: 12px;
+    background: #fafbfd;
+    color: #65788d;
+    font-size: 13px;
+}
+
+.waiting-summary-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.waiting-summary-item strong {
+    color: #2f67d8;
+    font-size: 14px;
+}
+
+.waiting-summary-item:first-child strong {
+    color: #ef8b00;
+}
+
+.waiting-summary-icon {
+    margin-right: 4px;
+    font-size: 18px;
+    color: #65788d;
+}
+
+/* 更新ボタン */
+.study-waiting .waiting-refresh-btn {
+    width: fit-content;
+    min-width: 110px;
+    margin: 22px auto 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+@media (max-width: 620px) {
+    .count-note {
+        font-size: 10px;
+    }
+
+    .waiting-summary {
+        padding: 14px 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 9px;
+    }
+
+    .study-waiting #countdown {
+        font-size: 34px;
+    }
+}

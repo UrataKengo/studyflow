@@ -4,50 +4,130 @@
 <head>
     <meta charset="UTF-8">
     <title>カテゴリ編集</title>
+
     <link rel="stylesheet" href="{{ asset('css/cards.css') }}">
 </head>
 
 <body>
+
     <div class="layout">
 
         <aside class="sidebar">
-            <div class="logo">StudyFlow</div>
+
+            <div class="logo">
+                StudyFlow
+            </div>
 
             <nav class="menu">
-                <a href="{{ route('dashboard.index') }}">ダッシュボード</a>
-                <a href="{{ route('cards.index') }}">カード一覧</a>
-                <a class="active" href="{{ route('categories.index') }}">カテゴリ</a>
-                <a href="{{ route('study-logs.index') }}">学習履歴</a>
+
+                <a href="{{ route('dashboard.index') }}">
+                    ダッシュボード
+                </a>
+
+                <a class="active" href="{{ route('cards.index') }}">
+                    カード一覧
+                </a>
+
+                <a href="{{ route('study.index') }}">
+                    学習開始
+                </a>
+
             </nav>
 
-            <form action="{{ route('logout') }}" method="POST" style="margin-top:20px;">
+            <form
+                action="{{ route('logout') }}"
+                method="POST"
+                style="margin-top:20px;"
+            >
                 @csrf
 
                 <button type="submit" class="logout-btn">
                     ログアウト
                 </button>
+
             </form>
+
         </aside>
 
+
         <main class="content">
+
             <h1>カテゴリ編集</h1>
 
-            <form action="{{ route('categories.update', $category->id) }}" method="POST">
-                @csrf
-                @method('PUT')
 
-                <p>
-                    <strong>カテゴリ名</strong><br>
-                    <input type="text" name="name" value="{{ $category->name }}" required>
-                </p>
+            @if ($errors->any())
 
-                <button type="submit">更新</button>
+                <div class="error-message">
 
-                <a href="{{ route('categories.index') }}">戻る</a>
-            </form>
+                    @foreach ($errors->all() as $error)
+
+                        <div>
+                            {{ $error }}
+                        </div>
+
+                    @endforeach
+
+                </div>
+
+            @endif
+
+
+            <div class="card">
+
+                <form
+                    action="{{ route('categories.update', $category->id) }}"
+                    method="POST"
+                >
+
+                    @csrf
+                    @method('PUT')
+
+
+                    <div class="form-group">
+
+                        <label for="name">
+                            カテゴリ名
+                        </label>
+
+                        <input
+                            id="name"
+                            type="text"
+                            name="name"
+                            value="{{ old('name', $category->name) }}"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-actions">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+                            更新
+                        </button>
+
+                        <a
+                            href="{{ route('cards.index', [
+                                'category_id' => $category->id
+                            ]) }}"
+                            class="btn btn-secondary"
+                        >
+                            戻る
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
         </main>
 
     </div>
+
 </body>
 
 </html>

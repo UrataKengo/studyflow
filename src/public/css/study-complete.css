@@ -1,0 +1,322 @@
+/* StudyFlow 学習画面 - 学習完了UI */
+
+.study-complete {
+    padding: 46px 42px 40px;
+    text-align: center;
+}
+
+.complete-icon {
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 14px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #edf9f1;
+    color: #269052;
+    font-size: 27px;
+    font-weight: 800;
+}
+
+.complete-eyebrow {
+    margin: 0 0 8px;
+    color: #5b86ca;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+}
+
+.study-complete h2 {
+    margin: 0;
+    color: #172b3d;
+    font-size: 25px;
+    line-height: 1.5;
+}
+
+.complete-message {
+    margin: 10px 0 0;
+    color: #77889b;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.complete-summary {
+    width: min(720px, 100%);
+    margin: 30px auto 0;
+    padding: 22px;
+    border: 1px solid #dfe7ee;
+    border-radius: 16px;
+    background: #fafcfd;
+}
+
+.complete-summary-primary {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 5px;
+    padding-bottom: 18px;
+}
+
+.complete-summary-primary span {
+    margin-right: 8px;
+    color: #64788d;
+    font-size: 13px;
+}
+
+.complete-summary-primary strong {
+    color: #2165cb;
+    font-size: 32px;
+    line-height: 1;
+}
+
+.complete-summary-primary small {
+    color: #64788d;
+    font-size: 12px;
+}
+
+.complete-result-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    padding: 18px 0;
+    border-top: 1px solid #e5ebf0;
+    border-bottom: 1px solid #e5ebf0;
+}
+
+.complete-result-item {
+    min-height: 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    border-radius: 11px;
+    background: #ffffff;
+}
+
+.complete-result-item span {
+    color: #748598;
+    font-size: 12px;
+}
+
+.complete-result-item strong {
+    font-size: 21px;
+}
+
+.complete-result-item.again strong {
+    color: #e74747;
+}
+
+.complete-result-item.hard strong {
+    color: #e98519;
+}
+
+.complete-result-item.good strong {
+    color: #22a65b;
+}
+
+.complete-result-item.easy strong {
+    color: #3168df;
+}
+
+.complete-rate {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding-top: 18px;
+    text-align: left;
+}
+
+.complete-rate div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.complete-rate span {
+    color: #43586e;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.complete-rate small {
+    color: #8b99a9;
+    font-size: 11px;
+}
+
+.complete-rate strong {
+    color: #238b50;
+    font-size: 27px;
+}
+
+/* 別カテゴリへの導線 */
+.next-category-area {
+    width: min(720px, 100%);
+    margin: 22px auto 0;
+    padding: 18px;
+    border: 1px solid #dfe7ee;
+    border-radius: 16px;
+    background: #ffffff;
+    text-align: left;
+}
+
+.next-category-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 12px;
+}
+
+.next-category-heading > div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.next-category-heading span {
+    color: #7a8b9e;
+    font-size: 11px;
+}
+
+.next-category-heading strong {
+    color: #263a4f;
+    font-size: 14px;
+}
+
+.next-category-heading small {
+    color: #238b50;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.next-category-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+}
+
+.next-category-item {
+    min-height: 48px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 9px;
+    padding: 0 13px;
+    border: 1px solid #e0e7ef;
+    border-radius: 10px;
+    color: #34495e;
+    background: #fbfcfe;
+    text-decoration: none;
+    transition: 0.16s ease;
+}
+
+.next-category-item:hover {
+    border-color: #a7c6f8;
+    background: #f4f8ff;
+    transform: translateY(-1px);
+}
+
+.next-category-item > span:first-child {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.next-category-item strong {
+    color: #2770d7;
+    font-size: 12px;
+}
+
+.next-category-arrow {
+    color: #8798aa;
+    font-size: 15px;
+}
+
+.complete-actions {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.complete-primary-btn,
+.complete-secondary-btn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition: 0.16s ease;
+}
+
+.complete-primary-btn {
+    background: #2f8f55;
+    color: #ffffff;
+}
+
+.complete-primary-btn:hover {
+    background: #277d49;
+    transform: translateY(-1px);
+}
+
+.complete-secondary-btn {
+    border: 1px solid #d6e0e9;
+    background: #ffffff;
+    color: #52667b;
+}
+
+.complete-secondary-btn:hover {
+    background: #f6f8fa;
+}
+
+/* 完了時にも今日の学習バーを見せる場合の余白調整 */
+.study-counts + .category-filter-area {
+    margin-top: 20px;
+}
+
+@media (max-width: 700px) {
+    .study-complete {
+        padding: 34px 20px 30px;
+    }
+
+    .study-complete h2 {
+        font-size: 21px;
+    }
+
+    .complete-result-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .next-category-list {
+        grid-template-columns: 1fr;
+    }
+
+    .next-category-heading {
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 430px) {
+    .complete-rate {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .complete-actions {
+        flex-direction: column;
+    }
+
+    .complete-primary-btn,
+    .complete-secondary-btn {
+        width: 100%;
+    }
+}

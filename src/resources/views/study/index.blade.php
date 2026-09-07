@@ -3,217 +3,493 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>学習開始</title>
-    <link rel="stylesheet" href="{{ asset('css/cards.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学習 | StudyFlow</title>
+
+    <link rel="stylesheet" href="{{ asset('css/study.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/study-category.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/study-answer.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/study-progress.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/study-waiting.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/study-complete.css') }}">
 </head>
 
 <body>
-    <div class="layout">
+    <header class="study-topbar">
+        <div class="study-topbar-brand">
+            <a href="{{ route('dashboard.index') }}" class="study-topbar-logo">
+                StudyFlow
+            </a>
 
-        <aside class="sidebar">
-            <div class="logo">StudyFlow</div>
+            <span class="study-topbar-divider"></span>
 
-            <nav class="menu">
-                <a href="{{ route('dashboard.index') }}">ダッシュボード</a>
-                <a href="{{ route('cards.index') }}">カード一覧</a>
-                <a href="{{ route('categories.index') }}">カテゴリ</a>
-                <a class="active" href="{{ route('study.index') }}">学習開始</a>
-                <a href="{{ route('study-logs.index') }}">学習履歴</a>
-            </nav>
+            <span class="study-topbar-page">
+                学習
+            </span>
+        </div>
 
-            <form action="{{ route('logout') }}" method="POST" style="margin-top:20px;">
-                @csrf
+        <a href="{{ route('dashboard.index') }}" class="dashboard-back-btn">
+            ← ダッシュボードへ戻る
+        </a>
+    </header>
 
-                <button type="submit" class="logout-btn">
-                    ログアウト
-                </button>
-            </form>
-        </aside>
+    <main class="content">
+        <div class="page-heading">
+            <div>
+                <h1>学習</h1>
+                <p>今日のカードを少しずつ進めましょう。</p>
+            </div>
+        </div>
 
-        <main class="content">
+        <section class="study-counts" aria-label="学習状況">
+            <div class="count-box learning">
+                <span>学習中</span>
+                <strong>{{ $displayLearningCount }}</strong>
 
-            <h1>学習開始</h1>
-
-            <div class="study-counts">
-                <div class="count-box learning">
-                    <span>学習中</span>
-                    <strong>{{ $learningCount }}</strong>
-                </div>
-
-                <div class="count-box new">
-                    <span>新規</span>
-                    <strong>{{ $newCount }}</strong>
-                </div>
-
-                <div class="count-box review">
-                    <span>復習</span>
-                    <strong>{{ $reviewCount }}</strong>
-                </div>
+                @if ($waitingLearningCount > 0)
+                    <small class="count-note">待機中のカードを含む</small>
+                @endif
             </div>
 
-            <div class="category-filter-area">
-                <h2>学習するカテゴリ</h2>
+            <div class="count-box new">
+                <span>新規</span>
+                <strong>{{ $newCount }}</strong>
+            </div>
 
-                <div class="category-tabs">
-                    <a href="{{ route('study.index') }}" class="{{ empty($categoryId) ? 'active-category' : '' }}">
-                        すべて
+            <div class="count-box review">
+                <span>復習</span>
+                <strong>{{ $reviewCount }}</strong>
+            </div>
+        </section>
+
+        @if ($card || $waitingLearningCount > 0)
+            <section class="study-progress-area">
+                <span class="study-progress-label">
+                    今日の学習
+                    @if ($selectedCategory)
+                        <small>（{{ $selectedCategory->name }}）</small>
+                    @endif
+                </span>
+
+                <strong class="study-progress-count">
+                    残り {{ $total }} 枚
+                </strong>
+            </section>
+        @endif
+
+        <section class="category-filter-area">
+            <div class="category-filter">
+                <button type="button"
+                    class="category-filter-button {{ $selectedCategory ? 'selected' : '' }}"
+                    id="categoryFilterButton"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+
+                    <span class="category-filter-icon">▦</span>
+
+                    <span class="category-filter-text">
+                        {{ $selectedCategory?->name ?? 'すべてのカテゴリ' }}
+                    </span>
+
+                    <span class="category-filter-arrow">⌄</span>
+                </button>
+
+                <div class="category-filter-menu" id="categoryFilterMenu">
+                    <a href="{{ route('study.index') }}"
+                        class="category-filter-item {{ !$categoryId ? 'active' : '' }}">
+
+                        <span class="category-filter-main">
+                            <span class="category-check">
+                                {{ !$categoryId ? '✓' : '' }}
+                            </span>
+
+                            <span>すべてのカテゴリ</span>
+                        </span>
+
+                        <strong>{{ $allRemainingCount }}</strong>
                     </a>
 
                     @foreach ($categories as $category)
+                        @php
+                            $remainingCount = $categoryRemainingCounts[$category->id] ?? 0;
+                            $isSelected = (int) $categoryId === (int) $category->id;
+                        @endphp
+
                         <a href="{{ route('study.index', ['category_id' => $category->id]) }}"
-                            class="{{ ($categoryId ?? '') == $category->id ? 'active-category' : '' }}">
-                            {{ $category->name }}
+                            class="category-filter-item
+                                {{ $isSelected ? 'active' : '' }}
+                                {{ $remainingCount === 0 ? 'is-empty' : '' }}">
+
+                            <span class="category-filter-main">
+                                <span class="category-check">
+                                    {{ $isSelected ? '✓' : '' }}
+                                </span>
+
+                                <span>{{ $category->name }}</span>
+                            </span>
+
+                            <strong>{{ $remainingCount }}</strong>
                         </a>
                     @endforeach
+
+                    @if ($categories->isEmpty())
+                        <div class="category-filter-empty">
+                            カテゴリがまだありません
+                        </div>
+                    @endif
                 </div>
             </div>
+        </section>
 
-            @if($card)
-                <p class="study-progress">
-                    1 / {{ $total }} 問
-                </p>
-            @endif
+        @if ($card)
+            @php
+                $statusNames = [
+                    'new' => '新規',
+                    'learning' => '学習中',
+                    'review' => '復習',
+                ];
 
-            @if ($card)
+                $levelNames = [
+                    1 => '初心者',
+                    2 => '学習中',
+                    3 => '定着中',
+                    4 => '習得',
+                    5 => 'マスター',
+                ];
 
-                <div class="study-card">
+                $currentLevel = max(1, min(5, (int) $card->level));
+                $currentStatus = $card->status ?? 'new';
+            @endphp
 
-                    <div class="study-categories">
-                        @forelse ($card->categories as $category)
-                            <span>{{ $category->name }}</span>
-                        @empty
-                            <span>カテゴリなし</span>
-                        @endforelse
+            <section class="study-card">
+                <div class="study-card-header">
+                    <div class="study-card-info">
+                        <span class="status-badge status-{{ $currentStatus }}">
+                            {{ $statusNames[$currentStatus] ?? '新規' }}
+                        </span>
+
+                        <span class="level-badge level-{{ $currentLevel }}">
+                            Lv.{{ $currentLevel }}
+                            {{ $levelNames[$currentLevel] }}
+                        </span>
                     </div>
 
-                    <h2>{{ $card->question }}</h2>
+                    <div class="study-card-header-right">
+                        <div class="today-answer-count">
+                            <span>今日の回答</span>
+                            <strong>{{ $todaySummary['total'] }}回</strong>
+                        </div>
 
-                    <div class="study-card-options">
-                        <button type="button" class="option-btn">︙</button>
+                        <div class="study-card-options">
+                            <button type="button"
+                                class="option-btn"
+                                aria-label="カードの操作メニュー"
+                                aria-expanded="false">
+                                ︙
+                            </button>
 
-                        <div class="option-menu">
-                            <a href="{{ route('cards.edit', $card->id) }}">編集</a>
+                            <div class="option-menu">
+                            <a href="{{ route('cards.edit', $card->id) }}">
+                                編集
+                            </a>
 
                             <form action="{{ route('cards.destroy', $card->id) }}" method="POST">
                                 @csrf
-
                                 @method('DELETE')
 
-                                <button type="submit" onclick="return confirm('このカードを削除しますか？')">
+                                <button type="submit"
+                                    class="delete-option"
+                                    onclick="return confirm('このカードを削除しますか？')">
                                     削除
                                 </button>
                             </form>
-                        </div>
-                    </div>
-
-                    <details class="answer-box">
-                        <summary>答えを見る</summary>
-
-                        <div class="answer-content">
-                            {{ $card->answer }}
-                        </div>
-                    </details>
-
-                    <div class="study-actions">
-
-                        <form action="{{ route('study.result', $card->id) }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="result" value="again">
-                            <input type="hidden" name="category_id" value="{{ $categoryId }}">
-                            <button class="again-btn">もう一度</button>
-                        </form>
-
-                        <form action="{{ route('study.result', $card->id) }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="result" value="hard">
-                            <input type="hidden" name="category_id" value="{{ $categoryId }}">
-                            <button class="hard-btn">難しい</button>
-                        </form>
-
-                        <form action="{{ route('study.result', $card->id) }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="result" value="good">
-                            <input type="hidden" name="category_id" value="{{ $categoryId }}">
-                            <button class="good-btn">良い</button>
-                        </form>
-
-                        <form action="{{ route('study.result', $card->id) }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="result" value="easy">
-                            <input type="hidden" name="category_id" value="{{ $categoryId }}">
-                            <button class="easy-btn">簡単</button>
-                        </form>
-
-                    </div>
-
-                </div>
-
-            @elseif($waitingLearningCount > 0)
-
-                <div class="study-card study-waiting">
-                    <div class="complete-icon">⏳</div>
-
-                    <h2>学習中カードの待機時間です</h2>
-
-                    <p>
-                        現在出題できるカードはありません。<br>
-                        <strong>{{ $waitingLearningCount }}枚</strong> のカードが、
-                        しばらくすると再出題されます。
-                    </p>
-
-                    <p>
-                        少し休憩してからページを更新してください。
-                    </p>
-
-                    @if($nextLearningCard)
-                        <div class="countdown-area">
-                            <p>次のカードまで</p>
-
-                            <div id="countdown" data-review-at="{{ $nextLearningCard->review_at->timestamp * 1000 }}">
-                                --
                             </div>
                         </div>
-                    @endif
-
-                    <a href="{{ route('study.index', ['category_id' => $categoryId]) }}" class="study-btn">
-                        更新する
-                    </a>
+                    </div>
                 </div>
 
-            @else
+                <div class="question-area">
+                    <span class="question-label">問題</span>
+                    <h2>{{ $card->question }}</h2>
+                </div>
 
-                <div class="study-card study-complete">
-                    <div class="complete-icon">🎉</div>
+                <details class="answer-box">
+                    <summary>答えを見る</summary>
 
-                    <h2>今日の学習お疲れさまでした！</h2>
+                    <div class="answer-content">
+                        {{ $card->answer }}
+                    </div>
+                </details>
 
-                    <p>
-                        本日の復習はすべて完了しました。
+                <div class="study-actions" id="studyActions">
+                    @foreach ([
+                        ['value' => 'again', 'class' => 'again-btn', 'label' => 'もう一度'],
+                        ['value' => 'hard', 'class' => 'hard-btn', 'label' => '難しい'],
+                        ['value' => 'good', 'class' => 'good-btn', 'label' => '良い'],
+                        ['value' => 'easy', 'class' => 'easy-btn', 'label' => '簡単'],
+                    ] as $action)
+                        <form action="{{ route('study.result', $card->id) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="result" value="{{ $action['value'] }}">
+
+                            @if ($categoryId)
+                                <input type="hidden" name="category_id" value="{{ $categoryId }}">
+                            @endif
+
+                            <button type="submit" class="{{ $action['class'] }}">
+                                <span class="answer-result">{{ $action['label'] }}</span>
+                                <span class="answer-interval">{{ $answerIntervals[$action['value']] }}</span>
+                            </button>
+                        </form>
+                    @endforeach
+                </div>
+            </section>
+
+        @elseif ($waitingLearningCount > 0)
+
+            <section class="study-card state-card study-waiting">
+                <div class="state-icon">⏳</div>
+
+                <h2>学習中カードの待機時間です</h2>
+
+                <p>
+                    現在出題できるカードはありません。<br>
+                    <strong>{{ $waitingLearningCount }}枚</strong> のカードが、
+                    しばらくすると再出題されます。
+                </p>
+
+                <p class="state-subtext">
+                    少し休憩してからページを更新してください。
+                </p>
+
+                @if ($nextLearningCard)
+                    <div class="countdown-area">
+                        <p>次のカードまで</p>
+
+                        <div id="countdown"
+                            data-review-at="{{ $nextLearningCard->review_at->timestamp * 1000 }}">
+                            --
+                        </div>
+
+                        <div class="next-review-time">
+                            再出題予定
+                            <strong>
+                                {{ $nextLearningCard->review_at->timezone('Asia/Tokyo')->format('H:i') }}
+                            </strong>
+                        </div>
+                    </div>
+                @endif
+
+                <div class="waiting-summary">
+                    <div class="waiting-summary-item">
+                        <span class="waiting-summary-icon">◷</span>
+                        <span>待機中のカード：</span>
+                        <strong>{{ $waitingLearningCount }}枚</strong>
+                    </div>
+
+                    <div class="waiting-summary-item">
+                        <span>今日の回答</span>
+                        <strong>{{ $todaySummary['total'] }}回</strong>
+                    </div>
+                </div>
+
+                <a href="{{ route('study.index', $categoryId ? ['category_id' => $categoryId] : []) }}"
+                    class="study-btn waiting-refresh-btn">
+                    <span aria-hidden="true">↻</span>
+                    更新する
+                </a>
+            </section>
+
+        @else
+
+            @php
+                $otherStudyCategories = $categories->filter(function ($category) use (
+                    $categoryRemainingCounts,
+                    $categoryId
+                ) {
+                    $remaining = $categoryRemainingCounts[$category->id] ?? 0;
+
+                    return $remaining > 0
+                        && (int) $category->id !== (int) $categoryId;
+                });
+            @endphp
+
+            <section class="study-card state-card study-complete">
+                <div class="complete-icon">✓</div>
+
+                @if ($selectedCategory)
+                    <p class="complete-eyebrow">CATEGORY COMPLETE</p>
+                    <h2>{{ $selectedCategory->name }}の今日の学習が完了しました！</h2>
+                    <p class="complete-message">
+                        このカテゴリで今日取り組むカードはすべて完了です。
                     </p>
+                @else
+                    <p class="complete-eyebrow">TODAY COMPLETE</p>
+                    <h2>今日の学習が完了しました！</h2>
+                    <p class="complete-message">
+                        今日取り組むカードはすべて完了です。お疲れさまでした。
+                    </p>
+                @endif
 
-                    <a href="{{ route('dashboard.index') }}" class="study-btn">
+                <div class="complete-summary">
+                    <div class="complete-summary-primary">
+                        <span>今日の回答</span>
+                        <strong>{{ $todaySummary['total'] }}</strong>
+                        <small>回</small>
+                    </div>
+
+                    <div class="complete-result-grid">
+                        <div class="complete-result-item again">
+                            <span>もう一度</span>
+                            <strong>{{ $todaySummary['again'] }}</strong>
+                        </div>
+
+                        <div class="complete-result-item hard">
+                            <span>難しい</span>
+                            <strong>{{ $todaySummary['hard'] }}</strong>
+                        </div>
+
+                        <div class="complete-result-item good">
+                            <span>良い</span>
+                            <strong>{{ $todaySummary['good'] }}</strong>
+                        </div>
+
+                        <div class="complete-result-item easy">
+                            <span>簡単</span>
+                            <strong>{{ $todaySummary['easy'] }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="complete-rate">
+                        <div>
+                            <span>定着率</span>
+                            <small>「良い」「簡単」の割合</small>
+                        </div>
+
+                        <strong>{{ $todaySummary['correct_rate'] }}%</strong>
+                    </div>
+                </div>
+
+                @if ($selectedCategory && $otherStudyCategories->isNotEmpty())
+                    <div class="next-category-area">
+                        <div class="next-category-heading">
+                            <div>
+                                <span>まだ学習できるカテゴリがあります</span>
+                                <strong>続けて学習しますか？</strong>
+                            </div>
+
+                            <small>残り {{ $allRemainingCount }} 枚</small>
+                        </div>
+
+                        <div class="next-category-list">
+                            @foreach ($otherStudyCategories->take(4) as $category)
+                                <a href="{{ route('study.index', ['category_id' => $category->id]) }}"
+                                    class="next-category-item">
+                                    <span>{{ $category->name }}</span>
+                                    <strong>
+                                        {{ $categoryRemainingCounts[$category->id] ?? 0 }}枚
+                                    </strong>
+                                    <span class="next-category-arrow">→</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                <div class="complete-actions">
+                    @if ($selectedCategory && $allRemainingCount > 0)
+                        <a href="{{ route('study.index') }}" class="complete-primary-btn">
+                            すべてのカテゴリを学習
+                        </a>
+                    @endif
+
+                    <a href="{{ route('dashboard.index') }}" class="complete-secondary-btn">
                         ダッシュボードへ戻る
                     </a>
                 </div>
+            </section>
+        @endif
+    </main>
 
-            @endif
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const answerBox = document.querySelector('.answer-box');
+            const studyActions = document.getElementById('studyActions');
 
-        </main>
+            if (answerBox && studyActions) {
+                studyActions.hidden = true;
 
-        <script>
+                answerBox.addEventListener('toggle', function () {
+                    studyActions.hidden = !answerBox.open;
+                });
+            }
+
+            const optionButton = document.querySelector('.option-btn');
+            const optionMenu = document.querySelector('.option-menu');
+
+            if (optionButton && optionMenu) {
+                optionButton.addEventListener('click', function (event) {
+                    event.stopPropagation();
+
+                    const shouldOpen = !optionMenu.classList.contains('show');
+
+                    optionMenu.classList.toggle('show', shouldOpen);
+                    optionButton.setAttribute(
+                        'aria-expanded',
+                        shouldOpen ? 'true' : 'false'
+                    );
+                });
+
+                optionMenu.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                });
+
+                document.addEventListener('click', function () {
+                    optionMenu.classList.remove('show');
+                    optionButton.setAttribute('aria-expanded', 'false');
+                });
+            }
+
+            const categoryFilterButton = document.getElementById('categoryFilterButton');
+            const categoryFilterMenu = document.getElementById('categoryFilterMenu');
+
+            if (categoryFilterButton && categoryFilterMenu) {
+                categoryFilterButton.addEventListener('click', function (event) {
+                    event.stopPropagation();
+
+                    const shouldOpen = !categoryFilterMenu.classList.contains('show');
+
+                    categoryFilterMenu.classList.toggle('show', shouldOpen);
+                    categoryFilterButton.classList.toggle('open', shouldOpen);
+                    categoryFilterButton.setAttribute(
+                        'aria-expanded',
+                        shouldOpen ? 'true' : 'false'
+                    );
+                });
+
+                categoryFilterMenu.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                });
+
+                document.addEventListener('click', function () {
+                    categoryFilterMenu.classList.remove('show');
+                    categoryFilterButton.classList.remove('open');
+                    categoryFilterButton.setAttribute('aria-expanded', 'false');
+                });
+            }
+
             const countdown = document.getElementById('countdown');
 
             if (countdown) {
                 const reviewAt = Number(countdown.dataset.reviewAt);
 
                 function updateCountdown() {
-                    const now = Date.now();
-                    const diff = reviewAt - now;
+                    const diff = reviewAt - Date.now();
 
                     if (diff <= 0) {
                         countdown.textContent = '00:00';
                         location.reload();
-                        return;
+                        return false;
                     }
 
                     const totalSeconds = Math.ceil(diff / 1000);
@@ -224,26 +500,20 @@
                         String(minutes).padStart(2, '0') +
                         ':' +
                         String(seconds).padStart(2, '0');
+
+                    return true;
                 }
 
-                updateCountdown();
-
-                const timer = setInterval(() => {
-                    const diff = reviewAt - Date.now();
-
-                    if (diff <= 0) {
-                        clearInterval(timer);
-                        countdown.textContent = '00:00';
-                        location.reload();
-                        return;
-                    }
-
-                    updateCountdown();
-                }, 1000);
+                if (updateCountdown()) {
+                    const timer = setInterval(function () {
+                        if (!updateCountdown()) {
+                            clearInterval(timer);
+                        }
+                    }, 1000);
+                }
             }
-        </script>
-        </script>
-    </div>
+        });
+    </script>
 </body>
 
 </html>

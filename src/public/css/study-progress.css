@@ -1,0 +1,57 @@
+/* StudyFlow 学習画面 - 進捗表示 */
+
+.study-card-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.today-answer-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+    padding: 0 11px;
+    border: 1px solid #dbe4ee;
+    border-radius: 999px;
+    background: #f8fafc;
+    color: #687b90;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.today-answer-count span {
+    font-weight: 500;
+}
+
+.today-answer-count strong {
+    color: #2f66c8;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+/* ︙メニューと高さを揃える */
+.study-card-header-right .study-card-options {
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 620px) {
+    .study-card-header-right {
+        gap: 8px;
+    }
+
+    .today-answer-count {
+        padding: 0 9px;
+    }
+
+    .today-answer-count span {
+        display: none;
+    }
+
+    .today-answer-count strong::before {
+        content: "回答 ";
+        font-weight: 500;
+        color: #687b90;
+    }
+}

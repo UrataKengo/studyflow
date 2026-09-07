@@ -16,9 +16,7 @@
             <nav class="menu">
                 <a href="{{ route('dashboard.index') }}">ダッシュボード</a>
                 <a href="{{ route('cards.index') }}">カード一覧</a>
-                <a class="active" href="{{ route('categories.index') }}">カテゴリ</a>
                 <a href="{{ route('study.index') }}">学習開始</a>
-                <a href="{{ route('study-logs.index') }}">学習履歴</a>
             </nav>
 
             <form action="{{ route('logout') }}" method="POST" style="margin-top:20px;">
