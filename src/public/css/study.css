@@ -174,7 +174,7 @@ input {
 
 .study-card {
     position: relative;
-    padding: 32px;
+    padding: 26px 30px 28px;
     border: 1px solid #e0e6e2;
     border-radius: 18px;
     background: #ffffff;
@@ -186,7 +186,7 @@ input {
     align-items: flex-start;
     justify-content: space-between;
     gap: 18px;
-    margin-bottom: 26px;
+    margin-bottom: 14px;
 }
 
 .study-card-info {
@@ -197,16 +197,16 @@ input {
 }
 
 .question-area {
-    min-height: 180px;
+    min-height: 145px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 30px 10px 34px;
+    padding: 18px 10px 24px;
     text-align: center;
 }
 
 .question-label {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     color: #8a938e;
     font-size: 12px;
     font-weight: 700;
@@ -216,8 +216,8 @@ input {
 .question-area h2 {
     margin: 0;
     color: #25342c;
-    font-size: 30px;
-    line-height: 1.7;
+    font-size: 34px;
+    line-height: 1.45;
     overflow-wrap: anywhere;
 }
 
@@ -299,7 +299,7 @@ input {
 }
 
 .answer-box summary {
-    padding: 18px 20px;
+    padding: 15px 18px;
     color: #2f7d46;
     font-weight: 700;
     cursor: pointer;
@@ -311,13 +311,16 @@ input {
 }
 
 .answer-content {
-    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 24px 18px;
     background: #ffffff;
     color: #334155;
-    font-size: 18px;
-    line-height: 1.8;
-    white-space: pre-wrap;
+    font-size: 17px;
+    line-height: 1.65;
     overflow-wrap: anywhere;
+    text-align: center;
 }
 
 /* =========================
@@ -328,7 +331,7 @@ input {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
-    margin-top: 20px;
+    margin-top: 16px;
 }
 
 .study-actions[hidden] {
@@ -344,13 +347,13 @@ input {
 .good-btn,
 .easy-btn {
     width: 100%;
-    min-height: 68px;
+    min-height: 64px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 5px;
-    padding: 10px 14px;
+    gap: 4px;
+    padding: 9px 14px;
     border: none;
     border-radius: 11px;
     color: #ffffff;
@@ -700,3 +703,82 @@ input {
         grid-template-columns: 1fr;
     }
 }
+
+/* =========================
+   問題・解答画像
+========================= */
+
+.study-image-wrap {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.question-image-wrap {
+    margin-top: 18px;
+}
+
+.answer-image-wrap {
+    margin-top: 18px;
+}
+
+.study-image {
+    display: block;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    border-radius: 12px;
+    object-fit: contain;
+}
+
+.question-image {
+    max-height: 360px;
+}
+
+.answer-image {
+    width: min(100%, 620px);
+    max-height: 330px;
+    margin: 0 auto;
+}
+
+.answer-text {
+    display: inline-block;
+    width: auto;
+    max-width: 100%;
+    margin: 0;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    text-align: center;
+}
+
+.answer-text:empty {
+    display: none;
+}
+
+@media (max-width: 800px) {
+    .question-image {
+        max-height: 300px;
+    }
+
+    .answer-image {
+        width: min(100%, 540px);
+        max-height: 300px;
+    }
+}
+
+@media (max-width: 500px) {
+    .question-image-wrap {
+        margin-top: 14px;
+    }
+
+    .answer-image-wrap {
+        margin-top: 12px;
+    }
+
+    .question-image,
+    .answer-image {
+        width: 100%;
+        max-height: 260px;
+    }
+}
+

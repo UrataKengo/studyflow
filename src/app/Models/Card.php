@@ -10,6 +10,8 @@ class Card extends Model
         'user_id',
         'question',
         'answer',
+        'question_image',
+        'answer_image',
         'next_review_date',
         'level',
         'review_count',

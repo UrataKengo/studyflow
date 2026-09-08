@@ -8,7 +8,6 @@
 
     <link rel="stylesheet" href="{{ asset('css/study.css') }}">
     <link rel="stylesheet" href="{{ asset('css/study-category.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/study-answer.css') }}">
     <link rel="stylesheet" href="{{ asset('css/study-progress.css') }}">
     <link rel="stylesheet" href="{{ asset('css/study-waiting.css') }}">
     <link rel="stylesheet" href="{{ asset('css/study-complete.css') }}">
@@ -40,27 +39,6 @@
                 <p>今日のカードを少しずつ進めましょう。</p>
             </div>
         </div>
-
-        <section class="study-counts" aria-label="学習状況">
-            <div class="count-box learning">
-                <span>学習中</span>
-                <strong>{{ $displayLearningCount }}</strong>
-
-                @if ($waitingLearningCount > 0)
-                    <small class="count-note">待機中のカードを含む</small>
-                @endif
-            </div>
-
-            <div class="count-box new">
-                <span>新規</span>
-                <strong>{{ $newCount }}</strong>
-            </div>
-
-            <div class="count-box review">
-                <span>復習</span>
-                <strong>{{ $reviewCount }}</strong>
-            </div>
-        </section>
 
         @if ($card || $waitingLearningCount > 0)
             <section class="study-progress-area">
@@ -189,7 +167,11 @@
                             </button>
 
                             <div class="option-menu">
-                            <a href="{{ route('cards.edit', $card->id) }}">
+                            <a href="{{ route('cards.edit', [
+                                'card' => $card->id,
+                                'from' => 'study',
+                                'category_id' => $categoryId,
+                            ]) }}">
                                 編集
                             </a>
 
@@ -210,14 +192,41 @@
 
                 <div class="question-area">
                     <span class="question-label">問題</span>
-                    <h2>{{ $card->question }}</h2>
+
+                    @if ($card->question)
+                        <h2>{{ $card->question }}</h2>
+                    @endif
+
+                    @if ($card->question_image)
+                        <div class="study-image-wrap question-image-wrap">
+                            <img
+                                src="{{ asset('storage/' . $card->question_image) }}"
+                                alt="問題画像"
+                                class="study-image question-image"
+                            >
+                        </div>
+                    @endif
                 </div>
 
                 <details class="answer-box">
                     <summary>答えを見る</summary>
 
                     <div class="answer-content">
-                        {{ $card->answer }}
+                        @if ($card->answer)
+                            <div class="answer-text">
+                                {{ $card->answer }}
+                            </div>
+                        @endif
+
+                        @if ($card->answer_image)
+                            <div class="study-image-wrap answer-image-wrap">
+                                <img
+                                    src="{{ asset('storage/' . $card->answer_image) }}"
+                                    alt="解答画像"
+                                    class="study-image answer-image"
+                                >
+                            </div>
+                        @endif
                     </div>
                 </details>
 

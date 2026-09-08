@@ -1,0 +1,342 @@
+/* StudyFlow カード登録・編集画面 */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Yu Gothic", "Meiryo", sans-serif;
+    background: #f5f7fb;
+    color: #25342c;
+}
+
+a {
+    text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+/* ヘッダー */
+.card-form-topbar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 20px 40px;
+    background: #ffffff;
+    border-bottom: 1px solid #e3e7e5;
+}
+
+.card-form-brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.card-form-logo {
+    color: #2f7d46;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.card-form-divider {
+    width: 1px;
+    height: 26px;
+    background: #dce2df;
+}
+
+.card-form-page {
+    color: #68726d;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.card-form-back {
+    padding: 9px 15px;
+    border: 1px solid #dce2df;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #59635e;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.card-form-back:hover {
+    background: #f5f7f6;
+}
+
+/* メイン */
+.card-form-content {
+    width: 100%;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 40px;
+}
+
+.card-form-heading {
+    margin-bottom: 24px;
+}
+
+.card-form-heading h1 {
+    margin: 0 0 8px;
+    color: #0d5cc4;
+    font-size: 28px;
+}
+
+.card-form-heading p {
+    margin: 0;
+    color: #718096;
+    font-size: 14px;
+}
+
+.card-form-panel {
+    padding: 30px;
+    border: 1px solid #e0e6e2;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.card-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.form-section {
+    min-width: 0;
+}
+
+.form-section.full {
+    grid-column: 1 / -1;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 9px;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.form-hint {
+    display: block;
+    margin-top: 8px;
+    color: #8693a3;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.card-form-panel textarea,
+.card-form-panel select,
+.card-form-panel input[type="file"] {
+    width: 100%;
+}
+
+.card-form-panel textarea,
+.card-form-panel select {
+    border: 1px solid #cfd8e3;
+    border-radius: 11px;
+    background: #ffffff;
+    color: #334155;
+    outline: none;
+    transition: 0.18s ease;
+}
+
+.card-form-panel textarea {
+    min-height: 140px;
+    padding: 14px 15px;
+    resize: vertical;
+    line-height: 1.7;
+}
+
+.card-form-panel select {
+    height: 46px;
+    padding: 0 13px;
+}
+
+.card-form-panel textarea:focus,
+.card-form-panel select:focus {
+    border-color: #76a5f6;
+    box-shadow: 0 0 0 3px rgba(70, 128, 240, 0.08);
+}
+
+/* 画像アップロード */
+.image-upload-box {
+    padding: 14px;
+    border: 1px dashed #cbd6e2;
+    border-radius: 12px;
+    background: #f8fafc;
+}
+
+.image-upload-box input[type="file"] {
+    display: block;
+    color: #475569;
+    font-size: 13px;
+}
+
+.image-preview {
+    display: none;
+    margin-top: 14px;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #ffffff;
+    text-align: center;
+}
+
+.image-preview.show {
+    display: block;
+}
+
+.image-preview img,
+.current-image img {
+    display: block;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 10px;
+    object-fit: contain;
+}
+
+/* 新しく選択した画像の確認用プレビュー */
+.image-preview img {
+    max-height: 180px;
+}
+
+/* 編集画面の現在画像はコンパクトに表示 */
+.current-image img {
+    max-height: 170px;
+}
+
+.current-image {
+    margin-bottom: 12px;
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #ffffff;
+}
+
+.current-image-label {
+    display: block;
+    margin-bottom: 10px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.remove-image {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 9px;
+    color: #b91c1c;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* エラー */
+.form-errors {
+    margin-bottom: 20px;
+    padding: 14px 16px;
+    border: 1px solid #fecaca;
+    border-radius: 11px;
+    background: #fef2f2;
+    color: #b91c1c;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* ボタン */
+.card-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 30px;
+    padding-top: 22px;
+    border-top: 1px solid #edf1f5;
+}
+
+.card-form-primary,
+.card-form-secondary {
+    min-width: 110px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 18px;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.card-form-primary {
+    border: none;
+    background: #2f7d46;
+    color: #ffffff;
+}
+
+.card-form-primary:hover {
+    background: #276b3b;
+}
+
+.card-form-secondary {
+    border: 1px solid #d6dee8;
+    background: #ffffff;
+    color: #59697b;
+}
+
+.card-form-secondary:hover {
+    background: #f8fafc;
+}
+
+@media (max-width: 760px) {
+    .card-form-topbar {
+        padding: 16px 20px;
+    }
+
+    .card-form-divider,
+    .card-form-page {
+        display: none;
+    }
+
+    .card-form-content {
+        padding: 26px 20px;
+    }
+
+    .card-form-panel {
+        padding: 22px 18px;
+    }
+
+    .card-form-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .form-section.full {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 500px) {
+    .card-form-back {
+        padding: 8px 10px;
+    }
+
+    .card-form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .card-form-primary,
+    .card-form-secondary {
+        width: 100%;
+    }
+}

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Card;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CardController extends Controller
 {
@@ -56,17 +57,32 @@ class CardController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'question' => 'required',
-            'answer' => 'required',
+            'question' => 'nullable|string|required_without:question_image',
+            'answer' => 'nullable|string|required_without:answer_image',
+
+            'question_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'answer_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+
             'category_id' => 'nullable|exists:categories,id',
             'return_category_id' => 'nullable|integer',
             'return_keyword' => 'nullable|string',
+            'return_to' => 'nullable|in:study,cards',
         ]);
+
+        $questionImagePath = $request->hasFile('question_image')
+            ? $request->file('question_image')->store('cards/questions', 'public')
+            : null;
+
+        $answerImagePath = $request->hasFile('answer_image')
+            ? $request->file('answer_image')->store('cards/answers', 'public')
+            : null;
 
         $card = Card::create([
             'user_id' => auth()->id(),
             'question' => $request->question,
             'answer' => $request->answer,
+            'question_image' => $questionImagePath,
+            'answer_image' => $answerImagePath,
             'next_review_date' => today(),
             'level' => 1,
             'review_count' => 0,
@@ -113,16 +129,74 @@ class CardController extends Controller
         $this->authorizeCard($card);
 
         $request->validate([
-            'question' => 'required',
-            'answer' => 'required',
+            'question' => 'nullable|string|required_without:question_image',
+            'answer' => 'nullable|string|required_without:answer_image',
+
+            'question_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'answer_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+
+            'remove_question_image' => 'nullable|boolean',
+            'remove_answer_image' => 'nullable|boolean',
+
             'category_id' => 'nullable|exists:categories,id',
             'return_category_id' => 'nullable|integer',
             'return_keyword' => 'nullable|string',
+            'return_to' => 'nullable|in:study,cards',
         ]);
+
+        $questionImagePath = $card->question_image;
+        $answerImagePath = $card->answer_image;
+
+        if ($request->boolean('remove_question_image') && $questionImagePath) {
+            Storage::disk('public')->delete($questionImagePath);
+            $questionImagePath = null;
+        }
+
+        if ($request->boolean('remove_answer_image') && $answerImagePath) {
+            Storage::disk('public')->delete($answerImagePath);
+            $answerImagePath = null;
+        }
+
+        if ($request->hasFile('question_image')) {
+            if ($questionImagePath) {
+                Storage::disk('public')->delete($questionImagePath);
+            }
+
+            $questionImagePath = $request->file('question_image')
+                ->store('cards/questions', 'public');
+        }
+
+        if ($request->hasFile('answer_image')) {
+            if ($answerImagePath) {
+                Storage::disk('public')->delete($answerImagePath);
+            }
+
+            $answerImagePath = $request->file('answer_image')
+                ->store('cards/answers', 'public');
+        }
+
+        /*
+         * 編集時は既存画像も「問題/解答の内容」として扱うため、
+         * 新しい画像が送られていない場合でも既存画像があれば
+         * テキストを空にできます。
+         */
+        if (!$request->filled('question') && !$questionImagePath) {
+            return back()
+                ->withErrors(['question' => '問題文または問題画像のどちらかを入力してください。'])
+                ->withInput();
+        }
+
+        if (!$request->filled('answer') && !$answerImagePath) {
+            return back()
+                ->withErrors(['answer' => '解答文または解答画像のどちらかを入力してください。'])
+                ->withInput();
+        }
 
         $card->update([
             'question' => $request->question,
             'answer' => $request->answer,
+            'question_image' => $questionImagePath,
+            'answer_image' => $answerImagePath,
         ]);
 
         if ($request->filled('category_id')) {
@@ -134,6 +208,18 @@ class CardController extends Controller
             $card->categories()->detach();
         }
 
+        if ($request->input('return_to') === 'study') {
+            $studyParams = [];
+
+            if ($request->filled('return_category_id')) {
+                $studyParams['category_id'] = $request->input('return_category_id');
+            }
+
+            return redirect()
+                ->route('study.index', $studyParams)
+                ->with('success', 'カードを更新しました');
+        }
+
         return redirect()
             ->route('cards.index', $this->returnFilters($request))
             ->with('success', 'カードを更新しました');
@@ -142,6 +228,14 @@ class CardController extends Controller
     public function destroy(Card $card)
     {
         $this->authorizeCard($card);
+
+        if ($card->question_image) {
+            Storage::disk('public')->delete($card->question_image);
+        }
+
+        if ($card->answer_image) {
+            Storage::disk('public')->delete($card->answer_image);
+        }
 
         $card->studyLogs()->delete();
         $card->categories()->detach();

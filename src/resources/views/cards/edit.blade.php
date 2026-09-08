@@ -3,211 +3,299 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>カード編集</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カード編集 | StudyFlow</title>
 
-    <link rel="stylesheet" href="{{ asset('css/cards.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/cards-form.css') }}">
 </head>
 
 <body>
 
-    <div class="layout">
-
-        <aside class="sidebar">
-
-            <div class="logo">
+    <header class="card-form-topbar">
+        <div class="card-form-brand">
+            <a href="{{ route('dashboard.index') }}" class="card-form-logo">
                 StudyFlow
-            </div>
+            </a>
 
-            <nav class="menu">
+            <span class="card-form-divider"></span>
 
-                <a href="{{ route('dashboard.index') }}">
-                    ダッシュボード
-                </a>
+            <span class="card-form-page">
+                カード編集
+            </span>
+        </div>
 
-                <a class="active" href="{{ route('cards.index') }}">
-                    カード一覧
-                </a>
-
-                <a href="{{ route('study.index') }}">
-                    学習開始
-                </a>
-
-            </nav>
-
-            <form
-                action="{{ route('logout') }}"
-                method="POST"
-                style="margin-top:20px;"
+        @if (request('from') === 'study')
+            <a
+                href="{{ route('study.index', request()->filled('category_id') ? ['category_id' => request('category_id')] : []) }}"
+                class="card-form-back"
             >
-                @csrf
+                ← 学習画面へ戻る
+            </a>
+        @else
+            <a href="{{ route('cards.index') }}" class="card-form-back">
+                ← カード管理へ戻る
+            </a>
+        @endif
+    </header>
 
-                <button
-                    type="submit"
-                    class="logout-btn"
-                >
-                    ログアウト
-                </button>
+    <main class="card-form-content">
 
-            </form>
-
-        </aside>
-
-
-        <main class="content">
-
+        <div class="card-form-heading">
             <h1>カード編集</h1>
+            <p>問題・答え・画像・カテゴリを編集できます。</p>
+        </div>
 
+        @if ($errors->any())
+            <div class="form-errors">
+                @foreach ($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
+            </div>
+        @endif
 
-            @if ($errors->any())
+        <form
+            action="{{ route('cards.update', $card) }}"
+            method="POST"
+            enctype="multipart/form-data"
+            class="card-form-panel"
+        >
+            @csrf
+            @method('PUT')
 
-                <div class="error-message">
+            @if (request('from') === 'study')
+                <input type="hidden" name="return_to" value="study">
 
-                    @foreach ($errors->all() as $error)
-
-                        <div>
-                            {{ $error }}
-                        </div>
-
-                    @endforeach
-
-                </div>
-
+                @if (request()->filled('category_id'))
+                    <input
+                        type="hidden"
+                        name="return_category_id"
+                        value="{{ request('category_id') }}"
+                    >
+                @endif
             @endif
 
+            <div class="card-form-grid">
 
-            <div class="card">
+                <div class="form-section">
+                    <label class="form-label" for="question">
+                        問題
+                    </label>
 
-                <form
-                    action="{{ route('cards.update', $card) }}"
-                    method="POST"
-                >
+                    <textarea
+                        id="question"
+                        name="question"
+                        placeholder="問題文を入力してください"
+                    >{{ old('question', $card->question) }}</textarea>
 
-                    @csrf
-                    @method('PUT')
+                    <span class="form-hint">
+                        問題文または問題画像のどちらか一方があれば保存できます。
+                    </span>
+                </div>
 
+                <div class="form-section">
+                    <label class="form-label" for="question_image">
+                        問題画像
+                    </label>
 
-                    <div class="form-group">
+                    <div class="image-upload-box">
 
-                        <label for="question">
-                            問題
-                        </label>
+                        @if ($card->question_image)
+                            <div class="current-image" id="currentQuestionImage">
+                                <span class="current-image-label">現在の画像</span>
 
-                        <textarea
-                            id="question"
-                            name="question"
-                            rows="4"
-                            required
-                        >{{ old('question', $card->question) }}</textarea>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label for="answer">
-                            答え
-                        </label>
-
-                        <textarea
-                            id="answer"
-                            name="answer"
-                            rows="4"
-                            required
-                        >{{ old('answer', $card->answer) }}</textarea>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label for="category_id">
-                            カテゴリ
-                        </label>
-
-                        @php
-                            $selectedCategoryId = old(
-                                'category_id',
-                                optional($card->categories->first())->id
-                            );
-                        @endphp
-
-                        <select
-                            id="category_id"
-                            name="category_id"
-                        >
-
-                            <option value="">
-                                カテゴリなし
-                            </option>
-
-
-                            @foreach ($categories as $category)
-
-                                <option
-                                    value="{{ $category->id }}"
-                                    @selected(
-                                        (string) $selectedCategoryId
-                                        ===
-                                        (string) $category->id
-                                    )
+                                <img
+                                    src="{{ asset('storage/' . $card->question_image) }}"
+                                    alt="現在の問題画像"
                                 >
-                                    {{ $category->name }}
-                                </option>
 
-                            @endforeach
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label for="next_review_date">
-                            次回復習日
-                        </label>
+                                <label class="remove-image">
+                                    <input
+                                        type="checkbox"
+                                        name="remove_question_image"
+                                        value="1"
+                                        id="removeQuestionImage"
+                                        @checked(old('remove_question_image'))
+                                    >
+                                    現在の画像を削除
+                                </label>
+                            </div>
+                        @endif
 
                         <input
-                            id="next_review_date"
-                            type="date"
-                            name="next_review_date"
-                            value="{{ old(
-                                'next_review_date',
-                                $card->next_review_date
-                                    ? $card->next_review_date->format('Y-m-d')
-                                    : ''
-                            ) }}"
+                            id="question_image"
+                            type="file"
+                            name="question_image"
+                            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                            data-preview-target="questionImagePreview"
                         >
 
+                        <span class="form-hint">
+                            新しい画像を選ぶと現在の画像を置き換えます。最大5MB
+                        </span>
+
+                        <div class="image-preview" id="questionImagePreview">
+                            <img src="" alt="新しい問題画像プレビュー">
+                        </div>
                     </div>
+                </div>
 
+                <div class="form-section">
+                    <label class="form-label" for="answer">
+                        答え
+                    </label>
 
-                    <div class="form-actions">
+                    <textarea
+                        id="answer"
+                        name="answer"
+                        placeholder="答えを入力してください"
+                    >{{ old('answer', $card->answer) }}</textarea>
 
-                        <button
-                            class="btn btn-primary"
-                            type="submit"
+                    <span class="form-hint">
+                        解答文または解答画像のどちらか一方があれば保存できます。
+                    </span>
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label" for="answer_image">
+                        解答画像
+                    </label>
+
+                    <div class="image-upload-box">
+
+                        @if ($card->answer_image)
+                            <div class="current-image" id="currentAnswerImage">
+                                <span class="current-image-label">現在の画像</span>
+
+                                <img
+                                    src="{{ asset('storage/' . $card->answer_image) }}"
+                                    alt="現在の解答画像"
+                                >
+
+                                <label class="remove-image">
+                                    <input
+                                        type="checkbox"
+                                        name="remove_answer_image"
+                                        value="1"
+                                        id="removeAnswerImage"
+                                        @checked(old('remove_answer_image'))
+                                    >
+                                    現在の画像を削除
+                                </label>
+                            </div>
+                        @endif
+
+                        <input
+                            id="answer_image"
+                            type="file"
+                            name="answer_image"
+                            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                            data-preview-target="answerImagePreview"
                         >
-                            更新
-                        </button>
 
-                        <a
-                            class="btn btn-secondary"
-                            href="{{ route('cards.index') }}"
-                        >
-                            戻る
-                        </a>
+                        <span class="form-hint">
+                            新しい画像を選ぶと現在の画像を置き換えます。最大5MB
+                        </span>
 
+                        <div class="image-preview" id="answerImagePreview">
+                            <img src="" alt="新しい解答画像プレビュー">
+                        </div>
                     </div>
+                </div>
 
-                </form>
+                <div class="form-section full">
+                    <label class="form-label" for="category_id">
+                        カテゴリ
+                    </label>
+
+                    @php
+                        $selectedCategoryId = old(
+                            'category_id',
+                            optional($card->categories->first())->id
+                        );
+                    @endphp
+
+                    <select id="category_id" name="category_id">
+                        <option value="">カテゴリなし</option>
+
+                        @foreach ($categories as $category)
+                            <option
+                                value="{{ $category->id }}"
+                                @selected(
+                                    (string) $selectedCategoryId
+                                    ===
+                                    (string) $category->id
+                                )
+                            >
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
             </div>
 
-        </main>
+            <div class="card-form-actions">
+                @if (request('from') === 'study')
+                    <a
+                        href="{{ route('study.index', request()->filled('category_id') ? ['category_id' => request('category_id')] : []) }}"
+                        class="card-form-secondary"
+                    >
+                        戻る
+                    </a>
+                @else
+                    <a href="{{ route('cards.index') }}" class="card-form-secondary">
+                        戻る
+                    </a>
+                @endif
 
-    </div>
+                <button type="submit" class="card-form-primary">
+                    更新
+                </button>
+            </div>
+
+        </form>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('input[type="file"][data-preview-target]')
+                .forEach(function (input) {
+                    input.addEventListener('change', function () {
+                        const preview = document.getElementById(input.dataset.previewTarget);
+                        const image = preview?.querySelector('img');
+                        const file = input.files?.[0];
+
+                        if (!preview || !image) {
+                            return;
+                        }
+
+                        if (!file) {
+                            preview.classList.remove('show');
+                            image.removeAttribute('src');
+                            return;
+                        }
+
+                        image.src = URL.createObjectURL(file);
+                        preview.classList.add('show');
+
+                        if (input.id === 'question_image') {
+                            const remove = document.getElementById('removeQuestionImage');
+                            if (remove) {
+                                remove.checked = false;
+                            }
+                        }
+
+                        if (input.id === 'answer_image') {
+                            const remove = document.getElementById('removeAnswerImage');
+                            if (remove) {
+                                remove.checked = false;
+                            }
+                        }
+                    });
+                });
+        });
+    </script>
 
 </body>
-
 </html>
