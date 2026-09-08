@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>カード管理 | StudyFlow</title>
-    <link rel="stylesheet" href="{{ asset('css/cards.css') }}?v=20260907-detail-modal-actions">
+    <link rel="stylesheet" href="{{ asset('css/cards.css') }}?v=20260908-unified-navigation-theme">
 
     <style>
         .message-fade-out {
@@ -24,27 +24,116 @@
     </style>
 </head>
 
-<body>
-    <header class="card-topbar">
-        <div class="card-topbar-brand">
-            <a href="{{ route('dashboard.index') }}" class="card-topbar-logo">
-                StudyFlow
+<body class="cards-page">
+    <div class="cards-background" aria-hidden="true">
+        <span class="cards-decor-circle cards-decor-left-top"></span>
+        <span class="cards-decor-circle cards-decor-left-bottom"></span>
+        <span class="cards-decor-circle cards-decor-right-top"></span>
+        <span class="cards-decor-circle cards-decor-right-bottom"></span>
+        <span class="cards-decor-line cards-decor-line-left"></span>
+        <span class="cards-decor-line cards-decor-line-right"></span>
+    </div>
+
+    <header class="card-topbar app-header">
+        <a href="{{ route('dashboard.index') }}"
+            class="app-brand"
+            aria-label="StudyFlow ダッシュボードへ">
+
+            <span class="app-brand-icon" aria-hidden="true">
+                <svg viewBox="0 0 86 64">
+                    <defs>
+                        <linearGradient id="cardsBookLeft" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#2196f3" />
+                            <stop offset="100%" stop-color="#2677ea" />
+                        </linearGradient>
+
+                        <linearGradient id="cardsBookRight" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#41c6cc" />
+                            <stop offset="100%" stop-color="#35c783" />
+                        </linearGradient>
+                    </defs>
+
+                    <path
+                        d="M7 8C17 5 27 6 36 11C40 13 42 16 43 19V57C38 52 32 49 25 47C19 45 13 45 7 47V8Z"
+                        fill="url(#cardsBookLeft)" />
+
+                    <path
+                        d="M79 8C69 5 59 6 50 11C46 13 44 16 43 19V57C48 52 54 49 61 47C67 45 73 45 79 47V8Z"
+                        fill="url(#cardsBookRight)" />
+
+                    <path d="M43 18V57"
+                        stroke="#ffffff"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        opacity="0.9" />
+                </svg>
+            </span>
+
+            <span class="app-brand-text">
+                <strong>StudyFlow</strong>
+                <small>記憶を、少しずつ確かなものに。</small>
+            </span>
+        </a>
+
+        <nav class="app-nav" aria-label="メインナビゲーション">
+            <a href="{{ route('dashboard.index') }}"
+                class="app-nav-link">
+                <span class="app-nav-icon" aria-hidden="true">⌂</span>
+                <span>ダッシュボード</span>
             </a>
 
-            <span class="card-topbar-divider"></span>
+            <a href="{{ route('cards.index') }}"
+                class="app-nav-link is-active"
+                aria-current="page">
+                <span class="app-nav-icon" aria-hidden="true">▣</span>
+                <span>カード管理</span>
+            </a>
 
-            <span class="card-topbar-page">
-                カード管理
-            </span>
-        </div>
+            <a href="{{ route('study.index') }}"
+                class="app-nav-link">
+                <span class="app-nav-icon" aria-hidden="true">▷</span>
+                <span>学習開始</span>
+            </a>
+        </nav>
 
-        <a href="{{ route('dashboard.index') }}" class="dashboard-back-btn">
-            ← ダッシュボードへ戻る
-        </a>
+        <form action="{{ route('logout') }}"
+            method="POST"
+            class="header-logout-form">
+            @csrf
+
+            <button type="submit" class="header-logout-btn">
+                <span aria-hidden="true">↪</span>
+                ログアウト
+            </button>
+        </form>
     </header>
 
+    <aside class="cards-side-copy cards-side-copy-left" aria-hidden="true">
+        SMALL STEPS<br>
+        BIG CHANGES
+    </aside>
+
+    <aside class="cards-side-copy cards-side-copy-right-top" aria-hidden="true">
+        A Better You<br>
+        One Card at a Time.
+        <span></span>
+    </aside>
+
+    <aside class="cards-side-copy cards-side-copy-right-bottom" aria-hidden="true">
+        学ぶことが、<br>
+        きっと楽しくなる。
+        <span></span>
+    </aside>
+
     <main class="content">
-        <h1>カード管理</h1>
+        <section class="page-heading">
+            <h1>カード管理</h1>
+
+            <p>
+                あなたの学習カードを管理しましょう。<br>
+                追加・編集・削除、カテゴリの整理ができます。
+            </p>
+        </section>
 
         @if (session('success'))
             <div class="success-message" id="successMessage">

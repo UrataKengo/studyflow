@@ -8,37 +8,134 @@
 
     <link rel="stylesheet" href="{{ asset('css/study.css') }}">
     <link rel="stylesheet" href="{{ asset('css/study-category.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/study-answer.css') }}">
     <link rel="stylesheet" href="{{ asset('css/study-progress.css') }}">
     <link rel="stylesheet" href="{{ asset('css/study-waiting.css') }}">
     <link rel="stylesheet" href="{{ asset('css/study-complete.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/study-theme.css') }}?v=20260908-1">
 </head>
 
-<body>
-    <header class="study-topbar">
-        <div class="study-topbar-brand">
-            <a href="{{ route('dashboard.index') }}" class="study-topbar-logo">
-                StudyFlow
+<body class="study-page">
+
+    <div class="study-background" aria-hidden="true">
+        <span class="study-decor-circle study-decor-left-top"></span>
+        <span class="study-decor-circle study-decor-left-bottom"></span>
+        <span class="study-decor-circle study-decor-right-top"></span>
+        <span class="study-decor-circle study-decor-right-bottom"></span>
+        <span class="study-decor-line study-decor-line-left"></span>
+        <span class="study-decor-line study-decor-line-right"></span>
+    </div>
+
+    <header class="study-topbar app-header">
+
+        <a href="{{ route('dashboard.index') }}" class="app-brand" aria-label="StudyFlow ダッシュボードへ">
+
+            <span class="app-brand-icon" aria-hidden="true">
+                <svg viewBox="0 0 86 64">
+                    <defs>
+                        <linearGradient id="studyBookLeft" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#2196f3" />
+                            <stop offset="100%" stop-color="#2677ea" />
+                        </linearGradient>
+
+                        <linearGradient id="studyBookRight" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#41c6cc" />
+                            <stop offset="100%" stop-color="#35c783" />
+                        </linearGradient>
+                    </defs>
+
+                    <path d="M7 8C17 5 27 6 36 11C40 13 42 16 43 19V57C38 52 32 49 25 47C19 45 13 45 7 47V8Z"
+                        fill="url(#studyBookLeft)" />
+
+                    <path d="M79 8C69 5 59 6 50 11C46 13 44 16 43 19V57C48 52 54 49 61 47C67 45 73 45 79 47V8Z"
+                        fill="url(#studyBookRight)" />
+
+                    <path d="M43 18V57" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.9" />
+                </svg>
+            </span>
+
+            <span class="app-brand-text">
+                <strong>StudyFlow</strong>
+                <small>記憶を、少しずつ確かなものに。</small>
+            </span>
+        </a>
+
+        <nav class="app-nav" aria-label="メインナビゲーション">
+
+            <a href="{{ route('dashboard.index') }}" class="app-nav-link">
+                <span class="app-nav-icon" aria-hidden="true">⌂</span>
+                <span>ダッシュボード</span>
             </a>
 
-            <span class="study-topbar-divider"></span>
+            <a href="{{ route('cards.index') }}" class="app-nav-link">
+                <span class="app-nav-icon" aria-hidden="true">▣</span>
+                <span>カード管理</span>
+            </a>
 
-            <span class="study-topbar-page">
-                学習
-            </span>
-        </div>
+            <a href="{{ route('study.index') }}" class="app-nav-link is-active" aria-current="page">
+                <span class="app-nav-icon" aria-hidden="true">▷</span>
+                <span>学習開始</span>
+            </a>
 
-        <a href="{{ route('dashboard.index') }}" class="dashboard-back-btn">
-            ← ダッシュボードへ戻る
-        </a>
+        </nav>
+
+        <form action="{{ route('logout') }}" method="POST" class="header-logout-form">
+            @csrf
+
+            <button type="submit" class="header-logout-btn">
+                <span aria-hidden="true">↪</span>
+                ログアウト
+            </button>
+        </form>
+
     </header>
 
+    <aside class="study-side-copy study-side-copy-left" aria-hidden="true">
+        SMALL STEPS<br>
+        BIG CHANGES
+    </aside>
+
+    <aside class="study-side-copy study-side-copy-right-top" aria-hidden="true">
+        A Better You<br>
+        One Card at a Time.
+        <span></span>
+    </aside>
+
+    <aside class="study-side-copy study-side-copy-right-bottom" aria-hidden="true">
+        学ぶことが、<br>
+        きっと楽しくなる。
+        <span></span>
+    </aside>
+
     <main class="content">
+
         <div class="page-heading">
             <div>
                 <h1>学習</h1>
                 <p>今日のカードを少しずつ進めましょう。</p>
             </div>
         </div>
+
+        <section class="study-counts" aria-label="学習状況">
+            <div class="count-box learning">
+                <span>学習中</span>
+                <strong>{{ $displayLearningCount }}</strong>
+
+                @if ($waitingLearningCount > 0)
+                    <small class="count-note">待機中のカードを含む</small>
+                @endif
+            </div>
+
+            <div class="count-box new">
+                <span>新規</span>
+                <strong>{{ $newCount }}</strong>
+            </div>
+
+            <div class="count-box review">
+                <span>復習</span>
+                <strong>{{ $reviewCount }}</strong>
+            </div>
+        </section>
 
         @if ($card || $waitingLearningCount > 0)
             <section class="study-progress-area">
@@ -57,11 +154,8 @@
 
         <section class="category-filter-area">
             <div class="category-filter">
-                <button type="button"
-                    class="category-filter-button {{ $selectedCategory ? 'selected' : '' }}"
-                    id="categoryFilterButton"
-                    aria-haspopup="true"
-                    aria-expanded="false">
+                <button type="button" class="category-filter-button {{ $selectedCategory ? 'selected' : '' }}"
+                    id="categoryFilterButton" aria-haspopup="true" aria-expanded="false">
 
                     <span class="category-filter-icon">▦</span>
 
@@ -93,10 +187,9 @@
                             $isSelected = (int) $categoryId === (int) $category->id;
                         @endphp
 
-                        <a href="{{ route('study.index', ['category_id' => $category->id]) }}"
-                            class="category-filter-item
-                                {{ $isSelected ? 'active' : '' }}
-                                {{ $remainingCount === 0 ? 'is-empty' : '' }}">
+                        <a href="{{ route('study.index', ['category_id' => $category->id]) }}" class="category-filter-item
+                                    {{ $isSelected ? 'active' : '' }}
+                                    {{ $remainingCount === 0 ? 'is-empty' : '' }}">
 
                             <span class="category-filter-main">
                                 <span class="category-check">
@@ -120,139 +213,107 @@
         </section>
 
         @if ($card)
-            @php
-                $statusNames = [
-                    'new' => '新規',
-                    'learning' => '学習中',
-                    'review' => '復習',
-                ];
+                @php
+                    $statusNames = [
+                        'new' => '新規',
+                        'learning' => '学習中',
+                        'review' => '復習',
+                    ];
 
-                $levelNames = [
-                    1 => '初心者',
-                    2 => '学習中',
-                    3 => '定着中',
-                    4 => '習得',
-                    5 => 'マスター',
-                ];
+                    $levelNames = [
+                        1 => '初心者',
+                        2 => '学習中',
+                        3 => '定着中',
+                        4 => '習得',
+                        5 => 'マスター',
+                    ];
 
-                $currentLevel = max(1, min(5, (int) $card->level));
-                $currentStatus = $card->status ?? 'new';
-            @endphp
+                    $currentLevel = max(1, min(5, (int) $card->level));
+                    $currentStatus = $card->status ?? 'new';
+                @endphp
 
-            <section class="study-card">
-                <div class="study-card-header">
-                    <div class="study-card-info">
-                        <span class="status-badge status-{{ $currentStatus }}">
-                            {{ $statusNames[$currentStatus] ?? '新規' }}
-                        </span>
+                <section class="study-card">
+                    <div class="study-card-header">
+                        <div class="study-card-info">
+                            <span class="status-badge status-{{ $currentStatus }}">
+                                {{ $statusNames[$currentStatus] ?? '新規' }}
+                            </span>
 
-                        <span class="level-badge level-{{ $currentLevel }}">
-                            Lv.{{ $currentLevel }}
-                            {{ $levelNames[$currentLevel] }}
-                        </span>
-                    </div>
-
-                    <div class="study-card-header-right">
-                        <div class="today-answer-count">
-                            <span>今日の回答</span>
-                            <strong>{{ $todaySummary['total'] }}回</strong>
+                            <span class="level-badge level-{{ $currentLevel }}">
+                                Lv.{{ $currentLevel }}
+                                {{ $levelNames[$currentLevel] }}
+                            </span>
                         </div>
 
-                        <div class="study-card-options">
-                            <button type="button"
-                                class="option-btn"
-                                aria-label="カードの操作メニュー"
-                                aria-expanded="false">
-                                ︙
-                            </button>
+                        <div class="study-card-header-right">
+                            <div class="today-answer-count">
+                                <span>今日の回答</span>
+                                <strong>{{ $todaySummary['total'] }}回</strong>
+                            </div>
 
-                            <div class="option-menu">
-                            <a href="{{ route('cards.edit', [
-                                'card' => $card->id,
-                                'from' => 'study',
-                                'category_id' => $categoryId,
-                            ]) }}">
-                                編集
-                            </a>
+                            <div class="study-card-options">
+                                <button type="button" class="option-btn" aria-label="カードの操作メニュー" aria-expanded="false">
+                                    ︙
+                                </button>
 
-                            <form action="{{ route('cards.destroy', $card->id) }}" method="POST">
+                                <div class="option-menu">
+                                    <a href="{{ route('cards.edit', [
+                                        'card' => $card->id,
+                                        'from' => 'study',
+                                        'category_id' => $categoryId,
+                                    ]) }}">
+                                        編集
+                                    </a>
+
+                                    <form action="{{ route('cards.destroy', $card->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button type="submit" class="delete-option" onclick="return confirm('このカードを削除しますか？')">
+                                            削除
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-area">
+                        <span class="question-label">問題</span>
+                        <h2>{{ $card->question }}</h2>
+                    </div>
+
+                    <details class="answer-box">
+                        <summary>答えを見る</summary>
+
+                        <div class="answer-content">
+                            {{ $card->answer }}
+                        </div>
+                    </details>
+
+                    <div class="study-actions" id="studyActions">
+                        @foreach ([
+                                ['value' => 'again', 'class' => 'again-btn', 'label' => 'もう一度'],
+                                ['value' => 'hard', 'class' => 'hard-btn', 'label' => '難しい'],
+                                ['value' => 'good', 'class' => 'good-btn', 'label' => '良い'],
+                                ['value' => 'easy', 'class' => 'easy-btn', 'label' => '簡単'],
+                            ] as $action)
+                            <form action="{{ route('study.result', $card->id) }}" method="POST">
                                 @csrf
-                                @method('DELETE')
+                                <input type="hidden" name="result" value="{{ $action['value'] }}">
 
-                                <button type="submit"
-                                    class="delete-option"
-                                    onclick="return confirm('このカードを削除しますか？')">
-                                    削除
+                                @if ($categoryId)
+                                    <input type="hidden" name="category_id" value="{{ $categoryId }}">
+                                @endif
+
+                                <button type="submit" class="{{ $action['class'] }}">
+                                    <span class="answer-result">{{ $action['label'] }}</span>
+                                    <span class="answer-interval">{{ $answerIntervals[$action['value']] }}</span>
                                 </button>
                             </form>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
-                </div>
-
-                <div class="question-area">
-                    <span class="question-label">問題</span>
-
-                    @if ($card->question)
-                        <h2>{{ $card->question }}</h2>
-                    @endif
-
-                    @if ($card->question_image)
-                        <div class="study-image-wrap question-image-wrap">
-                            <img
-                                src="{{ asset('storage/' . $card->question_image) }}"
-                                alt="問題画像"
-                                class="study-image question-image"
-                            >
-                        </div>
-                    @endif
-                </div>
-
-                <details class="answer-box">
-                    <summary>答えを見る</summary>
-
-                    <div class="answer-content">
-                        @if ($card->answer)
-                            <div class="answer-text">
-                                {{ $card->answer }}
-                            </div>
-                        @endif
-
-                        @if ($card->answer_image)
-                            <div class="study-image-wrap answer-image-wrap">
-                                <img
-                                    src="{{ asset('storage/' . $card->answer_image) }}"
-                                    alt="解答画像"
-                                    class="study-image answer-image"
-                                >
-                            </div>
-                        @endif
-                    </div>
-                </details>
-
-                <div class="study-actions" id="studyActions">
-                    @foreach ([
-                        ['value' => 'again', 'class' => 'again-btn', 'label' => 'もう一度'],
-                        ['value' => 'hard', 'class' => 'hard-btn', 'label' => '難しい'],
-                        ['value' => 'good', 'class' => 'good-btn', 'label' => '良い'],
-                        ['value' => 'easy', 'class' => 'easy-btn', 'label' => '簡単'],
-                    ] as $action)
-                        <form action="{{ route('study.result', $card->id) }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="result" value="{{ $action['value'] }}">
-
-                            @if ($categoryId)
-                                <input type="hidden" name="category_id" value="{{ $categoryId }}">
-                            @endif
-
-                            <button type="submit" class="{{ $action['class'] }}">
-                                <span class="answer-result">{{ $action['label'] }}</span>
-                                <span class="answer-interval">{{ $answerIntervals[$action['value']] }}</span>
-                            </button>
-                        </form>
-                    @endforeach
-                </div>
-            </section>
+                </section>
 
         @elseif ($waitingLearningCount > 0)
 
@@ -275,8 +336,7 @@
                     <div class="countdown-area">
                         <p>次のカードまで</p>
 
-                        <div id="countdown"
-                            data-review-at="{{ $nextLearningCard->review_at->timestamp * 1000 }}">
+                        <div id="countdown" data-review-at="{{ $nextLearningCard->review_at->timestamp * 1000 }}">
                             --
                         </div>
 
@@ -312,10 +372,7 @@
         @else
 
             @php
-                $otherStudyCategories = $categories->filter(function ($category) use (
-                    $categoryRemainingCounts,
-                    $categoryId
-                ) {
+                $otherStudyCategories = $categories->filter(function ($category) use ($categoryRemainingCounts, $categoryId) {
                     $remaining = $categoryRemainingCounts[$category->id] ?? 0;
 
                     return $remaining > 0
@@ -392,8 +449,7 @@
 
                         <div class="next-category-list">
                             @foreach ($otherStudyCategories->take(4) as $category)
-                                <a href="{{ route('study.index', ['category_id' => $category->id]) }}"
-                                    class="next-category-item">
+                                <a href="{{ route('study.index', ['category_id' => $category->id]) }}" class="next-category-item">
                                     <span>{{ $category->name }}</span>
                                     <strong>
                                         {{ $categoryRemainingCounts[$category->id] ?? 0 }}枚

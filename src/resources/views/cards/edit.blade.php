@@ -6,10 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>カード編集 | StudyFlow</title>
 
-    <link rel="stylesheet" href="{{ asset('css/cards-form.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/cards-form.css') }}?v=20260908-unified">
 </head>
 
-<body>
+<body class="card-form-page-bg">
+
+    <div class="card-form-background" aria-hidden="true">
+        <span class="card-form-decor-circle card-form-decor-left-top"></span>
+        <span class="card-form-decor-circle card-form-decor-left-bottom"></span>
+        <span class="card-form-decor-circle card-form-decor-right-top"></span>
+        <span class="card-form-decor-circle card-form-decor-right-bottom"></span>
+        <span class="card-form-decor-line card-form-decor-line-left"></span>
+        <span class="card-form-decor-line card-form-decor-line-right"></span>
+    </div>
+
+    <aside class="card-form-side-copy card-form-side-copy-left" aria-hidden="true">
+        SMALL STEPS<br>
+        BIG CHANGES
+    </aside>
+
+    <aside class="card-form-side-copy card-form-side-copy-right-top" aria-hidden="true">
+        A Better You<br>
+        One Card at a Time.
+        <span></span>
+    </aside>
+
+    <aside class="card-form-side-copy card-form-side-copy-right-bottom" aria-hidden="true">
+        学ぶことが、<br>
+        きっと楽しくなる。
+        <span></span>
+    </aside>
 
     <header class="card-form-topbar">
         <div class="card-form-brand">
@@ -40,9 +66,20 @@
 
     <main class="card-form-content">
 
-        <div class="card-form-heading">
-            <h1>カード編集</h1>
-            <p>問題・答え・画像・カテゴリを編集できます。</p>
+        <div class="card-form-page-top">
+            <div>
+                <div class="card-form-breadcrumb">
+                    <a href="{{ route('cards.index') }}">カード管理</a>
+                    <span>›</span>
+                    <span>カード編集</span>
+                </div>
+
+                <div class="card-form-heading">
+                    <h1>カード編集</h1>
+                    <p>問題・答え・画像・カテゴリを編集できます。</p>
+                </div>
+            </div>
+
         </div>
 
         @if ($errors->any())

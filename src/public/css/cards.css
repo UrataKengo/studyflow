@@ -2370,3 +2370,778 @@ h1 {
         margin-left: 0;
     }
 }
+
+/* =========================================================
+   2026-09-08 StudyFlow 共通テーマ
+   既存カード管理機能を維持したまま、
+   ログイン / ダッシュボードとデザインを統一
+========================================================= */
+
+html,
+body {
+    min-height: 100%;
+}
+
+body.cards-page {
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: #17365f;
+
+    background:
+        radial-gradient(
+            circle at 37% 20%,
+            rgba(255, 255, 255, 0.75) 0,
+            rgba(255, 255, 255, 0.22) 25%,
+            transparent 48%
+        ),
+        linear-gradient(
+            112deg,
+            #ccecff 0%,
+            #dff5ff 38%,
+            #dcf8f0 72%,
+            #e4fae9 100%
+        );
+}
+
+/* 背景装飾 */
+.cards-background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.cards-decor-circle {
+    position: absolute;
+    display: block;
+    border-radius: 50%;
+}
+
+.cards-decor-left-top {
+    width: 430px;
+    height: 430px;
+    top: 84px;
+    left: -260px;
+    background: rgba(69, 160, 241, 0.14);
+}
+
+.cards-decor-left-bottom {
+    width: 380px;
+    height: 380px;
+    left: -235px;
+    bottom: -155px;
+    background: rgba(75, 173, 245, 0.12);
+}
+
+.cards-decor-right-top {
+    width: 440px;
+    height: 440px;
+    top: 115px;
+    right: -245px;
+    background: rgba(65, 206, 180, 0.12);
+}
+
+.cards-decor-right-bottom {
+    width: 500px;
+    height: 500px;
+    right: -285px;
+    bottom: -175px;
+    background: rgba(62, 204, 137, 0.14);
+}
+
+.cards-decor-line {
+    position: absolute;
+    display: block;
+    border: 2px solid rgba(255, 255, 255, 0.72);
+    border-radius: 50%;
+}
+
+.cards-decor-line-left {
+    width: 830px;
+    height: 470px;
+    left: -370px;
+    bottom: -275px;
+    transform: rotate(16deg);
+}
+
+.cards-decor-line-right {
+    width: 920px;
+    height: 530px;
+    top: -305px;
+    right: -300px;
+    transform: rotate(-12deg);
+}
+
+/* 共通ナビ */
+.card-topbar.app-header {
+    position: relative;
+    z-index: 30;
+
+    width: 100%;
+    min-height: 86px;
+    padding: 13px 42px;
+
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) auto minmax(260px, 1fr);
+    align-items: center;
+    gap: 28px;
+
+    background: rgba(255, 255, 255, 0.84);
+    border-bottom: 1px solid rgba(177, 209, 225, 0.55);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.app-brand {
+    justify-self: start;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: inherit;
+}
+
+.app-brand-icon {
+    width: 47px;
+    height: 36px;
+    flex: 0 0 auto;
+}
+
+.app-brand-icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.app-brand-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.app-brand-text strong {
+    color: #126ec5;
+    font-size: 23px;
+    line-height: 1.05;
+    font-weight: 800;
+}
+
+.app-brand-text small {
+    margin-top: 5px;
+    color: #6087a8;
+    font-size: 9px;
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+}
+
+.app-nav {
+    align-self: stretch;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 8px;
+}
+
+.app-nav-link {
+    position: relative;
+    min-width: 130px;
+    padding: 0 13px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    color: #496d98;
+    font-size: 13px;
+    font-weight: 700;
+
+    transition:
+        color 0.18s ease,
+        background-color 0.18s ease;
+}
+
+.app-nav-link:hover {
+    color: #117ee0;
+}
+
+.app-nav-link.is-active {
+    color: #0575dc;
+}
+
+.app-nav-link.is-active::after {
+    content: "";
+
+    position: absolute;
+    left: 17px;
+    right: 17px;
+    bottom: 0;
+
+    height: 3px;
+    border-radius: 999px 999px 0 0;
+
+    background: linear-gradient(
+        90deg,
+        #2c91f1,
+        #29b6df
+    );
+}
+
+.app-nav-icon {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.header-logout-form {
+    justify-self: end;
+    margin: 0;
+}
+
+.header-logout-btn {
+    min-height: 43px;
+    padding: 9px 17px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    border: 1px solid #9bc9e7;
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.74);
+    color: #116bc1;
+
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+
+    box-shadow: 0 5px 14px rgba(65, 129, 167, 0.06);
+
+    transition:
+        transform 0.18s ease,
+        background-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.header-logout-btn:hover {
+    transform: translateY(-1px);
+    background: #ffffff;
+    box-shadow: 0 8px 18px rgba(65, 129, 167, 0.12);
+}
+
+/* サイド装飾テキスト */
+.cards-side-copy {
+    position: fixed;
+    z-index: 2;
+    pointer-events: none;
+    color: #2d94ba;
+
+    font-size: 10px;
+    line-height: 1.9;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+}
+
+.cards-side-copy-left {
+    left: 33px;
+    bottom: 15%;
+}
+
+.cards-side-copy-right-top {
+    right: 4%;
+    top: 118px;
+    line-height: 1.65;
+    letter-spacing: 0.14em;
+}
+
+.cards-side-copy-right-bottom {
+    right: 4%;
+    bottom: 10%;
+    color: #328fa5;
+    line-height: 1.65;
+    letter-spacing: 0.12em;
+}
+
+.cards-side-copy-right-top span,
+.cards-side-copy-right-bottom span {
+    display: block;
+    width: 29px;
+    height: 2px;
+    margin-top: 14px;
+    border-radius: 999px;
+    background: rgba(36, 147, 184, 0.52);
+}
+
+/* メイン */
+body.cards-page .content {
+    position: relative;
+    z-index: 5;
+
+    width: min(1160px, calc(100% - 90px));
+    max-width: none;
+    margin: 0 auto;
+    padding: 31px 0 38px;
+}
+
+.page-heading {
+    margin-bottom: 17px;
+}
+
+body.cards-page .page-heading h1 {
+    margin: 0;
+    color: #0757a6;
+    font-size: 34px;
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+.page-heading p {
+    margin: 11px 0 0;
+    color: #4f79a0;
+    font-size: 12px;
+    line-height: 1.75;
+    letter-spacing: 0.03em;
+}
+
+/* 白いガラスカード */
+body.cards-page .category-section,
+body.cards-page .card-tools,
+body.cards-page .selection-toolbar,
+body.cards-page .table-wrap {
+    border-color: rgba(255, 255, 255, 0.9);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.97),
+            rgba(255, 255, 255, 0.9)
+        );
+
+    box-shadow:
+        0 12px 30px rgba(65, 127, 158, 0.1);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+body.cards-page .category-section {
+    margin-bottom: 12px;
+    border-radius: 15px;
+}
+
+body.cards-page .category-bar {
+    min-height: 70px;
+    padding: 12px 16px;
+}
+
+body.cards-page .category-bar-icon {
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    background: rgba(57, 199, 176, 0.15);
+    color: #27b99a;
+}
+
+body.cards-page .category-bar-text strong {
+    color: #173f70;
+    font-size: 16px;
+}
+
+body.cards-page .category-bar-text small {
+    color: #6e88a2;
+    font-size: 10px;
+}
+
+body.cards-page .category-create-btn,
+body.cards-page .category-chevron-btn {
+    min-height: 40px;
+    border-color: #63c7ad;
+    background: rgba(255, 255, 255, 0.75);
+    color: #179d78;
+}
+
+body.cards-page .category-create-btn:hover,
+body.cards-page .category-chevron-btn:hover {
+    background: #f4fffb;
+    border-color: #47b999;
+}
+
+/* カテゴリドロップダウン */
+body.cards-page .category-list-panel {
+    border-color: #d8e8e6;
+    border-radius: 12px;
+    box-shadow:
+        0 17px 36px rgba(45, 104, 132, 0.16),
+        0 3px 8px rgba(45, 104, 132, 0.06);
+}
+
+body.cards-page .category-list-row.is-active {
+    background: #edf8ff;
+    box-shadow: inset 4px 0 0 #2896e9;
+}
+
+body.cards-page .category-active-mark {
+    background: #dff3ff;
+    color: #147ad0;
+}
+
+body.cards-page .category-rename-btn {
+    border-color: #cfe4f2;
+    background: #eef7ff;
+    color: #137ed5;
+}
+
+body.cards-page .category-delete-btn {
+    border-color: #f4ced3;
+    background: #fff2f4;
+    color: #e74e61;
+}
+
+/* 検索 / 操作バー */
+body.cards-page .card-tools {
+    margin-bottom: 14px;
+    overflow: hidden;
+    border-radius: 15px;
+}
+
+body.cards-page .card-tools-main {
+    min-height: 66px;
+    padding: 11px 14px;
+}
+
+body.cards-page .search-input-wrap {
+    width: min(410px, 100%);
+}
+
+body.cards-page .search-input-wrap input {
+    height: 43px;
+    border-color: #bfd3e2;
+    background: rgba(255, 255, 255, 0.86);
+    color: #284766;
+}
+
+body.cards-page .search-input-wrap input:focus {
+    border-color: #42a7ed;
+    box-shadow: 0 0 0 3px rgba(50, 154, 229, 0.11);
+}
+
+body.cards-page .search-input-icon {
+    color: #55799f;
+}
+
+body.cards-page .search-box button {
+    min-height: 43px;
+    border-radius: 9px;
+
+    background: linear-gradient(
+        100deg,
+        #257cf0,
+        #159af0
+    );
+
+    box-shadow: 0 6px 15px rgba(40, 130, 225, 0.17);
+}
+
+body.cards-page .search-box button:hover {
+    background: linear-gradient(
+        100deg,
+        #1d71e4,
+        #128de0
+    );
+}
+
+body.cards-page .search-box a {
+    min-height: 43px;
+    display: inline-flex;
+    align-items: center;
+
+    border-radius: 9px;
+    background: #eaf0f6;
+    color: #49657e;
+}
+
+body.cards-page .toolbar-selection-btn {
+    min-height: 43px;
+    border-color: #4288fb;
+    background: rgba(255, 255, 255, 0.84);
+    color: #0e73df;
+}
+
+body.cards-page .small-create-card-btn {
+    min-height: 43px;
+
+    background: linear-gradient(
+        100deg,
+        #2196f3 0%,
+        #2eb4d7 50%,
+        #3bcf88 100%
+    );
+
+    box-shadow: 0 8px 18px rgba(43, 170, 192, 0.18);
+}
+
+body.cards-page .small-create-card-btn:hover {
+    background: linear-gradient(
+        100deg,
+        #168be8 0%,
+        #25a9cf 50%,
+        #31bf7b 100%
+    );
+}
+
+/* 選択中バー */
+body.cards-page .selection-mode .selection-toolbar {
+    background: rgba(240, 248, 255, 0.92);
+    border-color: #cfe0ff;
+}
+
+body.cards-page .selection-status-icon {
+    background: linear-gradient(
+        135deg,
+        #2d90f0,
+        #27b3dd
+    );
+}
+
+body.cards-page .selection-cancel-btn,
+body.cards-page .selected-category-btn {
+    border-color: #4288fb;
+    color: #0e73df;
+}
+
+/* テーブルは既存の「6行固定」を維持 */
+body.cards-page .table-wrap {
+    height: 534px;
+    border-radius: 12px;
+}
+
+body.cards-page .card-table {
+    color: #254260;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+body.cards-page .card-table th {
+    background: linear-gradient(
+        180deg,
+        #f5f8fb,
+        #eff4f7
+    );
+
+    color: #294565;
+    border-bottom-color: #dde7ee;
+}
+
+body.cards-page .card-table td {
+    background: rgba(255, 255, 255, 0.76);
+    border-bottom-color: #e7eef2;
+}
+
+body.cards-page .card-row:not(.is-selected):hover td {
+    background: rgba(243, 250, 255, 0.96);
+}
+
+body.cards-page .card-row.is-selected td {
+    background: #edf7ff !important;
+}
+
+body.cards-page .category-badge {
+    border-color: #a9d3ff;
+    background: #eaf5ff;
+    color: #0875dc;
+}
+
+body.cards-page .status-review {
+    background: #e3f8ec;
+    color: #16955e;
+}
+
+body.cards-page .review-later {
+    background: #ddf8e9;
+    color: #14975e;
+}
+
+/* モーダルも同じテーマ */
+body.cards-page .modal-bg {
+    background: rgba(25, 55, 78, 0.34);
+
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+body.cards-page .modal-box {
+    border: 1px solid rgba(255, 255, 255, 0.88);
+    border-radius: 17px;
+
+    background: linear-gradient(
+        155deg,
+        rgba(255, 255, 255, 0.99),
+        rgba(248, 254, 255, 0.96)
+    );
+
+    box-shadow: 0 25px 70px rgba(31, 76, 108, 0.25);
+}
+
+body.cards-page .modal-box h2,
+body.cards-page .card-detail-header h2 {
+    color: #135b9e;
+}
+
+body.cards-page .form-group input,
+body.cards-page .form-group textarea,
+body.cards-page .form-group select {
+    border-color: #c6d8e5;
+    background: #fbfdff;
+    color: #294760;
+}
+
+body.cards-page .form-group input:focus,
+body.cards-page .form-group textarea:focus,
+body.cards-page .form-group select:focus {
+    border-color: #42a7ed;
+    box-shadow: 0 0 0 3px rgba(50, 154, 229, 0.1);
+}
+
+body.cards-page .btn-primary {
+    background: linear-gradient(
+        100deg,
+        #258ff0,
+        #38c78e
+    );
+}
+
+body.cards-page .btn-primary:hover {
+    background: linear-gradient(
+        100deg,
+        #187fdd,
+        #2dbb81
+    );
+}
+
+body.cards-page .btn-secondary {
+    background: #edf2f6;
+    color: #506b82;
+}
+
+/* 画面幅調整 */
+@media (max-width: 1260px) {
+    .cards-side-copy {
+        display: none;
+    }
+
+    .card-topbar.app-header {
+        grid-template-columns: 250px auto 190px;
+        padding-left: 28px;
+        padding-right: 28px;
+    }
+
+    .app-nav-link {
+        min-width: 115px;
+    }
+
+    body.cards-page .content {
+        width: min(1120px, calc(100% - 55px));
+    }
+}
+
+@media (max-width: 960px) {
+    .card-topbar.app-header {
+        grid-template-columns: 1fr auto;
+        padding-bottom: 0;
+    }
+
+    .app-nav {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        height: 46px;
+    }
+
+    .app-nav-link {
+        min-width: 0;
+        flex: 1;
+    }
+}
+
+@media (max-width: 650px) {
+    .card-topbar.app-header {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .app-brand-text strong {
+        font-size: 20px;
+    }
+
+    .app-brand-text small {
+        display: none;
+    }
+
+    .header-logout-btn {
+        padding: 8px 10px;
+        font-size: 10px;
+    }
+
+    .app-nav-link {
+        padding: 0 7px;
+        gap: 4px;
+        font-size: 10px;
+    }
+
+    .app-nav-icon {
+        font-size: 16px;
+    }
+
+    body.cards-page .content {
+        width: calc(100% - 26px);
+        padding-top: 24px;
+    }
+
+    body.cards-page .page-heading h1 {
+        font-size: 28px;
+    }
+}
+
+/* =========================================================
+   2026-09-08 カテゴリドロップダウン重なり順修正
+   カテゴリ一覧が検索バーやカード一覧の裏に隠れないようにする
+========================================================= */
+
+body.cards-page .category-section {
+    position: relative;
+    z-index: 100;
+    overflow: visible;
+}
+
+body.cards-page .category-list-panel {
+    z-index: 1000;
+}
+
+body.cards-page .card-tools {
+    position: relative;
+    z-index: 20;
+}
+
+body.cards-page .selection-toolbar {
+    position: relative;
+    z-index: 15;
+}
+
+body.cards-page .table-wrap {
+    position: relative;
+    z-index: 10;
+}
+
+/*
+ * backdrop-filter は stacking context を作るため、
+ * カテゴリ側を明示的に上へ出す。
+ */
+body.cards-page .category-section.is-category-open {
+    z-index: 200;
+}
+
