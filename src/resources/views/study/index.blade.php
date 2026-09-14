@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="{{ asset('css/study-category.css') }}">
     <link rel="stylesheet" href="{{ asset('css/study-answer.css') }}">
     <link rel="stylesheet" href="{{ asset('css/study-progress.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/study-waiting.css') }}">
     <link rel="stylesheet" href="{{ asset('css/study-complete.css') }}">
     <link rel="stylesheet" href="{{ asset('css/study-theme.css') }}?v=20260908-1">
 
@@ -35,6 +34,72 @@
 
         .answer-text {
             white-space: normal;
+        }
+
+        /* 学習完了時の紙吹雪 */
+        .confetti-layer {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            top: -24px;
+            width: 9px;
+            height: 15px;
+            border-radius: 2px;
+            opacity: 0;
+            animation: confetti-fall var(--fall-duration) ease-out var(--delay) forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                opacity: 0;
+                transform: translate3d(0, -20px, 0) rotate(0deg);
+            }
+
+            8% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate3d(var(--drift), 105vh, 0) rotate(var(--rotate));
+            }
+        }
+
+        .study-complete .complete-icon {
+            animation: complete-icon-pop 0.55s cubic-bezier(.2, .9, .3, 1.35) both;
+        }
+
+        @keyframes complete-icon-pop {
+            0% {
+                opacity: 0;
+                transform: scale(0.45);
+            }
+
+            70% {
+                opacity: 1;
+                transform: scale(1.12);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .confetti-layer {
+                display: none;
+            }
+
+            .study-complete .complete-icon {
+                animation: none;
+            }
         }
     </style>
 
@@ -145,10 +210,6 @@
             <div class="count-box learning">
                 <span>学習中</span>
                 <strong>{{ $displayLearningCount }}</strong>
-
-                @if ($waitingLearningCount > 0)
-                    <small class="count-note">待機中のカードを含む</small>
-                @endif
             </div>
 
             <div class="count-box new">
@@ -162,7 +223,7 @@
             </div>
         </section>
 
-        @if ($card || $waitingLearningCount > 0)
+        @if ($card)
             <section class="study-progress-area">
                 <span class="study-progress-label">
                     今日の学習
@@ -364,61 +425,6 @@
                         @endforeach
                     </div>
                 </section>
-
-        @elseif ($waitingLearningCount > 0)
-
-            <section class="study-card state-card study-waiting">
-                <div class="state-icon">⏳</div>
-
-                <h2>学習中カードの待機時間です</h2>
-
-                <p>
-                    現在出題できるカードはありません。<br>
-                    <strong>{{ $waitingLearningCount }}枚</strong> のカードが、
-                    しばらくすると再出題されます。
-                </p>
-
-                <p class="state-subtext">
-                    少し休憩してからページを更新してください。
-                </p>
-
-                @if ($nextLearningCard)
-                    <div class="countdown-area">
-                        <p>次のカードまで</p>
-
-                        <div id="countdown" data-review-at="{{ $nextLearningCard->review_at->timestamp * 1000 }}">
-                            --
-                        </div>
-
-                        <div class="next-review-time">
-                            再出題予定
-                            <strong>
-                                {{ $nextLearningCard->review_at->timezone('Asia/Tokyo')->format('H:i') }}
-                            </strong>
-                        </div>
-                    </div>
-                @endif
-
-                <div class="waiting-summary">
-                    <div class="waiting-summary-item">
-                        <span class="waiting-summary-icon">◷</span>
-                        <span>待機中のカード：</span>
-                        <strong>{{ $waitingLearningCount }}枚</strong>
-                    </div>
-
-                    <div class="waiting-summary-item">
-                        <span>今日の回答</span>
-                        <strong>{{ $todaySummary['total'] }}回</strong>
-                    </div>
-                </div>
-
-                <a href="{{ route('study.index', $categoryId ? ['category_id' => $categoryId] : []) }}"
-                    class="study-btn waiting-refresh-btn">
-                    <span aria-hidden="true">↻</span>
-                    更新する
-                </a>
-            </section>
-
         @else
 
             @php
@@ -430,7 +436,7 @@
                 });
             @endphp
 
-            <section class="study-card state-card study-complete">
+            <section class="study-card state-card study-complete" id="studyComplete">
                 <div class="complete-icon">✓</div>
 
                 @if ($selectedCategory)
@@ -478,7 +484,7 @@
 
                     <div class="complete-rate">
                         <div>
-                            <span>定着率</span>
+                            <span>今日の正答率</span>
                             <small>「良い」「簡単」の割合</small>
                         </div>
 
@@ -593,40 +599,60 @@
                 });
             }
 
-            const countdown = document.getElementById('countdown');
+            const studyComplete = document.getElementById('studyComplete');
 
-            if (countdown) {
-                const reviewAt = Number(countdown.dataset.reviewAt);
+            if (studyComplete && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                const confettiLayer = document.createElement('div');
+                confettiLayer.className = 'confetti-layer';
+                confettiLayer.setAttribute('aria-hidden', 'true');
+                document.body.appendChild(confettiLayer);
 
-                function updateCountdown() {
-                    const diff = reviewAt - Date.now();
+                const colors = [
+                    '#2196f3',
+                    '#2677ea',
+                    '#41c6cc',
+                    '#35c783',
+                    '#f6c453',
+                    '#ff7a7a'
+                ];
 
-                    if (diff <= 0) {
-                        countdown.textContent = '00:00';
-                        location.reload();
-                        return false;
+                const pieceCount = 52;
+
+                for (let i = 0; i < pieceCount; i++) {
+                    const piece = document.createElement('span');
+                    piece.className = 'confetti-piece';
+
+                    const fromLeft = i % 2 === 0;
+                    const startX = fromLeft
+                        ? Math.random() * 18
+                        : 82 + Math.random() * 18;
+
+                    const drift = fromLeft
+                        ? 120 + Math.random() * 320
+                        : -(120 + Math.random() * 320);
+
+                    piece.style.left = startX + 'vw';
+                    piece.style.backgroundColor =
+                        colors[Math.floor(Math.random() * colors.length)];
+                    piece.style.setProperty('--drift', drift + 'px');
+                    piece.style.setProperty('--rotate', (360 + Math.random() * 720) + 'deg');
+                    piece.style.setProperty('--delay', (Math.random() * 0.35) + 's');
+                    piece.style.setProperty('--fall-duration', (1.45 + Math.random() * 0.75) + 's');
+
+                    if (Math.random() > 0.5) {
+                        piece.style.width = '7px';
+                        piece.style.height = '11px';
+                        piece.style.borderRadius = '50%';
                     }
 
-                    const totalSeconds = Math.ceil(diff / 1000);
-                    const minutes = Math.floor(totalSeconds / 60);
-                    const seconds = totalSeconds % 60;
-
-                    countdown.textContent =
-                        String(minutes).padStart(2, '0') +
-                        ':' +
-                        String(seconds).padStart(2, '0');
-
-                    return true;
+                    confettiLayer.appendChild(piece);
                 }
 
-                if (updateCountdown()) {
-                    const timer = setInterval(function () {
-                        if (!updateCountdown()) {
-                            clearInterval(timer);
-                        }
-                    }, 1000);
-                }
+                setTimeout(function () {
+                    confettiLayer.remove();
+                }, 2800);
             }
+
         });
     </script>
 </body>

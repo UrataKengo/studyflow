@@ -746,9 +746,6 @@ h1 {
     cursor: pointer;
 }
 
-.selection-mode .card-row {
-    cursor: pointer;
-}
 
 .selection-mode .option-wrapper {
     display: none !important;
@@ -2271,9 +2268,7 @@ h1 {
 }
 
 /* 3ボタンを均等な間隔で横並び */
-.card-detail-actions {
-    gap: 10px;
-}
+
 
 .card-detail-actions-right {
     gap: 10px;

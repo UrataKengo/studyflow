@@ -32,7 +32,6 @@ class StudyController extends Controller
         $newCount = $this->countNewCards($categoryId);
         $reviewCount = $this->countReviewCards($categoryId);
         $waitingLearningCount = $this->countWaitingLearningCards($categoryId);
-        $nextLearningCard = $this->getNextWaitingLearningCard($categoryId);
         $todaySummary = $this->getTodayStudySummary($categoryId);
 
         $displayLearningCount = $learningCount + $waitingLearningCount;
@@ -70,7 +69,6 @@ class StudyController extends Controller
             'newCount',
             'reviewCount',
             'waitingLearningCount',
-            'nextLearningCard',
             'answerIntervals',
             'todaySummary',
             'categories',
@@ -210,11 +208,6 @@ class StudyController extends Controller
     private function countWaitingLearningCards(?int $categoryId = null)
     {
         return $this->waitingLearningQueue($categoryId)->count();
-    }
-
-    private function getNextWaitingLearningCard(?int $categoryId = null)
-    {
-        return $this->waitingLearningQueue($categoryId)->first();
     }
 
     private function calculateLevel(Card $card, string $result)

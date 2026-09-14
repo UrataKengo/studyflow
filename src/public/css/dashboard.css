@@ -41,11 +41,8 @@ body.dashboard-page {
             #dcf8f0 72%,
             #e4fae9 100%
         );
-}
-
-/* cards.css の既存レイアウトを解除 */
-body.dashboard-page {
     display: block;
+
 }
 
 /* =========================================================
