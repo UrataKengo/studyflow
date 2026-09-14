@@ -21,8 +21,8 @@ class StudyController extends Controller
 
         $answerIntervals = $card
             ? [
-                'again' => '1分',
-                'hard' => '10分',
+                'again' => '約1分',
+                'hard' => '約10分',
                 'good' => $this->calculateReviewDays('good', (int) $card->review_count) . '日',
                 'easy' => $this->calculateReviewDays('easy', (int) $card->review_count) . '日',
             ]
@@ -36,7 +36,6 @@ class StudyController extends Controller
         $todaySummary = $this->getTodayStudySummary($categoryId);
 
         $displayLearningCount = $learningCount + $waitingLearningCount;
-
         $total = $displayLearningCount + $newCount + $reviewCount;
 
         $categories = Category::where('user_id', auth()->id())
@@ -132,7 +131,8 @@ class StudyController extends Controller
     {
         return $this->learningQueue($categoryId)->first()
             ?? $this->newQueue($categoryId)->first()
-            ?? $this->reviewQueue($categoryId)->first();
+            ?? $this->reviewQueue($categoryId)->first()
+            ?? $this->waitingLearningQueue($categoryId)->first();
     }
 
     private function learningQueue(?int $categoryId = null)
@@ -143,6 +143,17 @@ class StudyController extends Controller
                 $query->whereNull('review_at')
                     ->orWhere('review_at', '<=', now());
             });
+
+        $this->applyCategoryFilter($query, $categoryId);
+
+        return $query->orderBy('review_at');
+    }
+
+    private function waitingLearningQueue(?int $categoryId = null)
+    {
+        $query = Card::where('user_id', auth()->id())
+            ->where('status', 'learning')
+            ->where('review_at', '>', now());
 
         $this->applyCategoryFilter($query, $categoryId);
 
@@ -198,24 +209,12 @@ class StudyController extends Controller
 
     private function countWaitingLearningCards(?int $categoryId = null)
     {
-        $query = Card::where('user_id', auth()->id())
-            ->where('status', 'learning')
-            ->where('review_at', '>', now());
-
-        $this->applyCategoryFilter($query, $categoryId);
-
-        return $query->count();
+        return $this->waitingLearningQueue($categoryId)->count();
     }
 
     private function getNextWaitingLearningCard(?int $categoryId = null)
     {
-        $query = Card::where('user_id', auth()->id())
-            ->where('status', 'learning')
-            ->where('review_at', '>', now());
-
-        $this->applyCategoryFilter($query, $categoryId);
-
-        return $query->orderBy('review_at')->first();
+        return $this->waitingLearningQueue($categoryId)->first();
     }
 
     private function calculateLevel(Card $card, string $result)
@@ -230,17 +229,40 @@ class StudyController extends Controller
 
     private function calculateReviewSchedule(Card $card, string $result)
     {
+        $currentReviewCount = min(5, max(0, (int) $card->review_count));
+
         if ($result === 'again') {
-            return [0, 'learning', today(), now()->addMinute()];
+            $recentAgainCount = $this->getConsecutiveAgainCount($card);
+
+            $stepsBack = match (true) {
+                $recentAgainCount >= 2 => 3,
+                $recentAgainCount === 1 => 2,
+                default => 1,
+            };
+
+            return [
+                max(0, $currentReviewCount - $stepsBack),
+                'learning',
+                today(),
+                now()->addMinute(),
+            ];
         }
 
         if ($result === 'hard') {
-            return [$card->review_count, 'learning', today(), now()->addMinutes(10)];
+            return [
+                max(0, $currentReviewCount - 1),
+                'learning',
+                today(),
+                now()->addMinutes(10),
+            ];
         }
 
-        $oldReviewCount = $card->review_count;
-        $newReviewCount = $oldReviewCount + 1;
-        $days = $this->calculateReviewDays($result, $oldReviewCount);
+        $days = $this->calculateReviewDays($result, $currentReviewCount);
+
+        $newReviewCount = match ($result) {
+            'good' => min(5, $currentReviewCount + 1),
+            'easy' => min(5, $currentReviewCount + 2),
+        };
 
         return [
             $newReviewCount,
@@ -250,22 +272,49 @@ class StudyController extends Controller
         ];
     }
 
+    /**
+     * 直近の連続Again回数を取得します。
+     *
+     * 例:
+     * 直近が Good → 0
+     * 直近が Again → 1
+     * 直近が Again, Again → 2
+     *
+     * 今回押したAgainはまだStudyLogに保存される前なので、
+     * ここでは「今回の直前までに何回連続Againだったか」を数えます。
+     */
+    private function getConsecutiveAgainCount(Card $card): int
+    {
+        $logs = StudyLog::where('card_id', $card->id)
+            ->orderByDesc('studied_at')
+            ->limit(10)
+            ->pluck('result');
+
+        $count = 0;
+
+        foreach ($logs as $result) {
+            if ($result !== 'again') {
+                break;
+            }
+
+            $count++;
+        }
+
+        return $count;
+    }
+
     private function calculateReviewDays(string $result, int $reviewCount)
     {
-        return match ($result) {
-            'good' => match ($reviewCount) {
-                0 => 7,
-                1 => 14,
-                2 => 30,
-                default => 60,
-            },
-            'easy' => match ($reviewCount) {
-                0 => 14,
-                1 => 30,
-                2 => 60,
-                default => 120,
-            },
+        $intervals = [1, 3, 7, 14, 30, 60];
+
+        $reviewCount = min(5, max(0, $reviewCount));
+
+        $stage = match ($result) {
+            'good' => $reviewCount,
+            'easy' => min(5, $reviewCount + 1),
         };
+
+        return $intervals[$stage];
     }
 
     private function getTodayStudySummary(?int $categoryId = null): array

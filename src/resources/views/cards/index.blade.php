@@ -17,9 +17,297 @@
                 transform 0.35s ease;
         }
 
+
+        .card-detail-image-row[hidden] {
+            display: none;
+        }
+
+        .card-detail-image {
+            display: block;
+            max-width: 100%;
+            max-height: 220px;
+            width: auto;
+            height: auto;
+            border-radius: 10px;
+            object-fit: contain;
+        }
+
         .form-submit-disabled {
             opacity: 0.65;
             cursor: wait !important;
+        }
+
+        .card-create-modal-box {
+            width: min(980px, calc(100vw - 40px));
+            max-width: 980px;
+            max-height: calc(100vh - 48px);
+            overflow-y: auto;
+            padding: 28px;
+        }
+
+        .card-create-modal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card-create-modal-header h2 {
+            margin: 0;
+        }
+
+        .card-create-modal-header p {
+            margin: 8px 0 0;
+            color: #6b7f93;
+            font-size: 13px;
+        }
+
+        .card-create-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 22px 26px;
+        }
+
+        .card-create-grid .form-section.full {
+            grid-column: 1 / -1;
+        }
+
+        .card-create-grid .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #173f68;
+        }
+
+        .card-create-grid textarea,
+        .card-create-grid select,
+        .card-create-grid input[type="file"] {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .card-create-grid textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        .card-create-grid .form-hint {
+            display: block;
+            margin-top: 8px;
+            color: #7890a8;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .card-create-grid .image-upload-box {
+            min-height: 130px;
+            padding: 14px;
+            border: 1px dashed #b8d5eb;
+            border-radius: 12px;
+            background: #fbfdff;
+            box-sizing: border-box;
+        }
+
+        .card-create-grid .image-preview {
+            display: none;
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        .card-create-grid .image-preview.show {
+            display: block;
+        }
+
+        .card-create-grid .image-preview img {
+            display: block;
+            max-width: 100%;
+            max-height: 240px;
+            width: auto;
+            height: auto;
+            margin: 0 auto;
+            border-radius: 10px;
+            object-fit: contain;
+        }
+
+
+        .edit-current-image {
+            margin-bottom: 14px;
+            padding: 12px;
+            border: 1px solid #d6e2ec;
+            border-radius: 10px;
+            background: #ffffff;
+        }
+
+        .edit-current-image {
+            position: relative;
+        }
+
+        .current-image-remove-btn {
+            position: absolute;
+            top: 38px;
+            right: 18px;
+            z-index: 3;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            background: rgba(25, 39, 52, .78);
+            color: #ffffff;
+            font-size: 22px;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .18);
+        }
+
+        .current-image-remove-btn:hover {
+            background: rgba(210, 55, 65, .92);
+        }
+
+        .edit-current-image[hidden] {
+            display: none;
+        }
+
+        .edit-current-image .current-image-label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #5f7690;
+        }
+
+        .edit-current-image img {
+            display: block;
+            max-width: 100%;
+            max-height: 180px;
+            width: auto;
+            height: auto;
+            margin: 0 auto 10px;
+            border-radius: 10px;
+            object-fit: contain;
+        }
+
+        .edit-current-image .remove-image {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: #e24a55;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .card-create-actions {
+            margin-top: 24px;
+        }
+
+        .card-form-utility-row {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            margin: -4px 0 0;
+        }
+
+        .swap-card-sides-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 40px;
+            padding: 8px 16px;
+            border: 1px solid #b9d7ec;
+            border-radius: 999px;
+            background: #f7fbff;
+            color: #17649a;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+        }
+
+        .swap-card-sides-btn:hover {
+            transform: translateY(-1px);
+            background: #eef8ff;
+            box-shadow: 0 4px 12px rgba(31, 111, 171, .12);
+        }
+
+        .image-upload-box.is-dragover {
+            border-color: #2ba7c9;
+            background: #eefcff;
+            box-shadow: inset 0 0 0 2px rgba(43, 167, 201, .08);
+        }
+
+        .drop-paste-hint {
+            display: block;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #6f879d;
+        }
+
+
+        .card-create-grid .image-preview {
+            position: relative;
+            width: fit-content;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .preview-remove-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 3;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            background: rgba(25, 39, 52, .78);
+            color: #ffffff;
+            font-size: 22px;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .18);
+        }
+
+        .card-create-grid .image-preview.show .preview-remove-btn {
+            display: inline-flex;
+        }
+
+        .preview-remove-btn:hover {
+            background: rgba(210, 55, 65, .92);
+        }
+
+        .continue-create-btn {
+            border: 1px solid #8ec8ea;
+            background: #ffffff;
+            color: #1574b8;
+        }
+
+        .continue-create-btn:hover {
+            background: #f4fbff;
+        }
+
+        @media (max-width: 760px) {
+            .card-create-modal-box {
+                width: calc(100vw - 24px);
+                padding: 22px 18px;
+            }
+
+            .card-create-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-create-grid .form-section.full {
+                grid-column: auto;
+            }
         }
     </style>
 </head>
@@ -478,12 +766,20 @@
                         <tr class="card-row"
                             data-question="{{ $card->question }}"
                             data-answer="{{ $card->answer }}"
+                            data-question-image="{{ $card->question_image ? asset('storage/' . $card->question_image) : '' }}"
+                            data-answer-image="{{ $card->answer_image ? asset('storage/' . $card->answer_image) : '' }}"
                             data-category="{{ $cardCategoryName }}"
                             data-status="{{ $statusLabel }}"
                             data-level="Lv.{{ $currentLevel }} {{ $levelNames[$currentLevel] }}"
                             data-study-count="{{ $card->study_count }}回"
                             data-review-label="{{ $reviewLabel }}"
                             data-review-date="{{ $reviewDate ? $reviewDate->format('Y-m-d') : '未設定' }}"
+                            data-edit-url="{{ route('cards.edit', [
+                                'card' => $card->id,
+                                'from' => 'cards',
+                                'category_id' => $categoryId,
+                                'keyword' => $keyword,
+                            ]) }}"
                             data-update-url="{{ route('cards.update', $card->id) }}"
                             data-delete-url="{{ route('cards.destroy', $card->id) }}"
                             data-category-id="{{ $cardCategoryId }}">
@@ -591,9 +887,29 @@
                     <dd id="detailQuestion"></dd>
                 </div>
 
+                <div id="detailQuestionImageRow" hidden>
+                    <dt>問題画像</dt>
+                    <dd>
+                        <img id="detailQuestionImage"
+                            class="card-detail-image"
+                            src=""
+                            alt="問題画像">
+                    </dd>
+                </div>
+
                 <div>
                     <dt>解答</dt>
                     <dd id="detailAnswer"></dd>
+                </div>
+
+                <div id="detailAnswerImageRow" hidden>
+                    <dt>解答画像</dt>
+                    <dd>
+                        <img id="detailAnswerImage"
+                            class="card-detail-image"
+                            src=""
+                            alt="解答画像">
+                    </dd>
                 </div>
 
                 <div>
@@ -626,12 +942,6 @@
 
                 <div class="card-detail-actions-right">
                     <button type="button"
-                        class="btn-secondary"
-                        id="cardDetailCloseBottom">
-                        閉じる
-                    </button>
-
-                    <button type="button"
                         class="btn-primary detail-edit-btn"
                         id="cardDetailEditButton">
                         ✎ 編集する
@@ -643,46 +953,178 @@
 
     {{-- 新規カード作成モーダル --}}
     <div id="cardCreateModal" class="modal-bg">
-        <div class="modal-box">
-            <h2>新規カード作成</h2>
+        <div class="modal-box card-create-modal-box">
+            <div class="card-create-modal-header">
+                <div>
+                    <h2>新規カード作成</h2>
+                    <p>問題・答え・画像・カテゴリを登録できます。</p>
+                </div>
 
-            <form action="{{ route('cards.store') }}" method="POST">
+                <button type="button"
+                    class="modal-close-icon"
+                    onclick="closeCardModal()"
+                    aria-label="新規カード作成を閉じる">
+                    ×
+                </button>
+            </div>
+
+            <form
+                action="{{ route('cards.store') }}"
+                method="POST"
+                enctype="multipart/form-data"
+                id="cardCreateForm"
+            >
                 @csrf
 
                 <input type="hidden" name="return_category_id" value="{{ $categoryId ?? '' }}">
                 <input type="hidden" name="return_keyword" value="{{ $keyword ?? '' }}">
+                <input type="hidden" name="continue_create" id="continueCreateInput" value="0">
 
-                <div class="form-group">
-                    <label for="question">問題</label>
-                    <textarea id="question" name="question" required></textarea>
+                <div class="card-create-grid">
+
+                    <div class="form-section">
+                        <label class="form-label" for="question">
+                            問題
+                        </label>
+
+                        <textarea
+                            id="question"
+                            name="question"
+                            placeholder="問題文を入力してください"
+                        >{{ old('question') }}</textarea>
+
+                        <span class="form-hint">
+                            問題文または問題画像のどちらか一方があれば保存できます。
+                        </span>
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label" for="question_image">
+                            問題画像
+                        </label>
+
+                        <div class="image-upload-box">
+                            <input
+                                id="question_image"
+                                type="file"
+                                name="question_image"
+                                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                                data-preview-target="createQuestionImagePreview"
+                            >
+
+                            <span class="form-hint">
+                                JPG・PNG・WEBPに対応しています。最大5MB
+                            </span>
+                            <span class="drop-paste-hint">
+                                画像をここへドラッグ＆ドロップ、または貼り付け（Ctrl+V）できます。
+                            </span>
+
+                            <div class="image-preview" id="createQuestionImagePreview">
+                                <img src="" alt="問題画像プレビュー">
+                                <button type="button"
+                                    class="preview-remove-btn"
+                                    id="clearCreateQuestionImage"
+                                    aria-label="選択した画像を取り消す"
+                                    title="画像を取り消す">
+                                    ×
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label" for="answer">
+                            答え
+                        </label>
+
+                        <textarea
+                            id="answer"
+                            name="answer"
+                            placeholder="答えを入力してください"
+                        >{{ old('answer') }}</textarea>
+
+                        <span class="form-hint">
+                            解答文または解答画像のどちらか一方があれば保存できます。
+                        </span>
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label" for="answer_image">
+                            解答画像
+                        </label>
+
+                        <div class="image-upload-box">
+                            <input
+                                id="answer_image"
+                                type="file"
+                                name="answer_image"
+                                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                                data-preview-target="createAnswerImagePreview"
+                            >
+
+                            <span class="form-hint">
+                                JPG・PNG・WEBPに対応しています。最大5MB
+                            </span>
+                            <span class="drop-paste-hint">
+                                画像をここへドラッグ＆ドロップ、または貼り付け（Ctrl+V）できます。
+                            </span>
+
+                            <div class="image-preview" id="createAnswerImagePreview">
+                                <img src="" alt="解答画像プレビュー">
+                                <button type="button"
+                                    class="preview-remove-btn"
+                                    id="clearCreateAnswerImage"
+                                    aria-label="選択した画像を取り消す"
+                                    title="画像を取り消す">
+                                    ×
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-form-utility-row">
+                        <button type="button"
+                            class="swap-card-sides-btn"
+                            id="createSwapButton">
+                            ⇄ 問題と答えを入れ替える
+                        </button>
+                    </div>
+
+                    <div class="form-section full">
+                        <label class="form-label" for="category_id">
+                            カテゴリ
+                        </label>
+
+                        <select id="category_id" name="category_id">
+                            <option value="">カテゴリなし</option>
+
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}"
+                                    @selected(
+                                        (string) old('category_id', $categoryId ?? '')
+                                        ===
+                                        (string) $category->id
+                                    )>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
                 </div>
 
-                <div class="form-group">
-                    <label for="answer">解答</label>
-                    <textarea id="answer" name="answer" required></textarea>
-                </div>
+                <div class="modal-actions card-create-actions">
+                    
 
-                <div class="form-group">
-                    <label for="category_id">カテゴリ</label>
-
-                    <select id="category_id" name="category_id">
-                        <option value="">カテゴリなし</option>
-
-                        @foreach ($categories as $category)
-                            <option value="{{ $category->id }}"
-                                @selected((string) $categoryId === (string) $category->id)>
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="modal-actions">
-                    <button type="button" class="btn-secondary" onclick="closeCardModal()">
-                        キャンセル
+                    <button type="submit"
+                        class="btn-secondary continue-create-btn"
+                        id="continueCreateButton">
+                        登録して次へ
                     </button>
 
-                    <button type="submit" class="btn-primary">
+                    <button type="submit"
+                        class="btn-primary"
+                        id="createSubmitButton">
                         登録する
                     </button>
                 </div>
@@ -690,46 +1132,217 @@
         </div>
     </div>
 
+
     {{-- カード編集モーダル --}}
     <div id="cardEditModal" class="modal-bg">
-        <div class="modal-box">
-            <h2>カード編集</h2>
+        <div class="modal-box card-create-modal-box">
+            <div class="card-create-modal-header">
+                <div>
+                    <h2>カード編集</h2>
+                    <p>問題・答え・画像・カテゴリを編集できます。</p>
+                </div>
 
-            <form id="cardEditForm" method="POST">
+                <button type="button"
+                    class="modal-close-icon"
+                    onclick="closeEditCardModal()"
+                    aria-label="カード編集を閉じる">
+                    ×
+                </button>
+            </div>
+
+            <form
+                id="cardEditForm"
+                method="POST"
+                enctype="multipart/form-data"
+            >
                 @csrf
                 @method('PUT')
 
                 <input type="hidden" name="return_category_id" value="{{ $categoryId ?? '' }}">
                 <input type="hidden" name="return_keyword" value="{{ $keyword ?? '' }}">
 
-                <div class="form-group">
-                    <label for="edit_question">問題</label>
-                    <textarea id="edit_question" name="question" required></textarea>
+                <div class="card-create-grid">
+
+                    <div class="form-section">
+                        <label class="form-label" for="edit_question">
+                            問題
+                        </label>
+
+                        <textarea
+                            id="edit_question"
+                            name="question"
+                            placeholder="問題文を入力してください"
+                        ></textarea>
+
+                        <span class="form-hint">
+                            問題文または問題画像のどちらか一方があれば保存できます。
+                        </span>
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label" for="edit_question_image">
+                            問題画像
+                        </label>
+
+                        <div class="image-upload-box">
+                            <div class="current-image edit-current-image"
+                                id="editCurrentQuestionImage"
+                                hidden>
+                                <span class="current-image-label">現在の画像</span>
+
+                                <img
+                                    id="editCurrentQuestionImageImg"
+                                    src=""
+                                    alt="現在の問題画像"
+                                >
+                                <button type="button"
+                                    class="current-image-remove-btn"
+                                    id="removeCurrentQuestionImageButton"
+                                    aria-label="現在の問題画像を削除"
+                                    title="現在の画像を削除">
+                                    ×
+                                </button>
+
+                                <input type="hidden"
+                                    name="remove_question_image"
+                                    id="editRemoveQuestionImage"
+                                    value="0">
+
+                                
+                            </div>
+
+                            <input
+                                id="edit_question_image"
+                                type="file"
+                                name="question_image"
+                                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                                data-preview-target="editQuestionImagePreview"
+                            >
+
+                            <span class="form-hint">
+                                新しい画像を選ぶと現在の画像を置き換えます。最大5MB
+                            </span>
+                            <span class="drop-paste-hint">
+                                画像をここへドラッグ＆ドロップ、または貼り付け（Ctrl+V）できます。
+                            </span>
+
+                            <div class="image-preview" id="editQuestionImagePreview">
+                                <img src="" alt="新しい問題画像プレビュー">
+                                <button type="button"
+                                    class="preview-remove-btn"
+                                    id="clearEditQuestionImage"
+                                    aria-label="選択した画像を取り消す"
+                                    title="画像を取り消す">
+                                    ×
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label" for="edit_answer">
+                            答え
+                        </label>
+
+                        <textarea
+                            id="edit_answer"
+                            name="answer"
+                            placeholder="答えを入力してください"
+                        ></textarea>
+
+                        <span class="form-hint">
+                            解答文または解答画像のどちらか一方があれば保存できます。
+                        </span>
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label" for="edit_answer_image">
+                            解答画像
+                        </label>
+
+                        <div class="image-upload-box">
+                            <div class="current-image edit-current-image"
+                                id="editCurrentAnswerImage"
+                                hidden>
+                                <span class="current-image-label">現在の画像</span>
+
+                                <img
+                                    id="editCurrentAnswerImageImg"
+                                    src=""
+                                    alt="現在の解答画像"
+                                >
+                                <button type="button"
+                                    class="current-image-remove-btn"
+                                    id="removeCurrentAnswerImageButton"
+                                    aria-label="現在の解答画像を削除"
+                                    title="現在の画像を削除">
+                                    ×
+                                </button>
+
+                                <input type="hidden"
+                                    name="remove_answer_image"
+                                    id="editRemoveAnswerImage"
+                                    value="0">
+
+                                
+                            </div>
+
+                            <input
+                                id="edit_answer_image"
+                                type="file"
+                                name="answer_image"
+                                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                                data-preview-target="editAnswerImagePreview"
+                            >
+
+                            <span class="form-hint">
+                                新しい画像を選ぶと現在の画像を置き換えます。最大5MB
+                            </span>
+                            <span class="drop-paste-hint">
+                                画像をここへドラッグ＆ドロップ、または貼り付け（Ctrl+V）できます。
+                            </span>
+
+                            <div class="image-preview" id="editAnswerImagePreview">
+                                <img src="" alt="新しい解答画像プレビュー">
+                                <button type="button"
+                                    class="preview-remove-btn"
+                                    id="clearEditAnswerImage"
+                                    aria-label="選択した画像を取り消す"
+                                    title="画像を取り消す">
+                                    ×
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-form-utility-row">
+                        <button type="button"
+                            class="swap-card-sides-btn"
+                            id="editSwapButton">
+                            ⇄ 問題と答えを入れ替える
+                        </button>
+                    </div>
+
+                    <div class="form-section full">
+                        <label class="form-label" for="edit_category_id">
+                            カテゴリ
+                        </label>
+
+                        <select id="edit_category_id" name="category_id">
+                            <option value="">カテゴリなし</option>
+
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}">
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
                 </div>
 
-                <div class="form-group">
-                    <label for="edit_answer">解答</label>
-                    <textarea id="edit_answer" name="answer" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="edit_category_id">カテゴリ</label>
-
-                    <select id="edit_category_id" name="category_id">
-                        <option value="">カテゴリなし</option>
-
-                        @foreach ($categories as $category)
-                            <option value="{{ $category->id }}">
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="modal-actions">
-                    <button type="button" class="btn-secondary" onclick="closeEditCardModal()">
-                        キャンセル
-                    </button>
+                <div class="modal-actions card-create-actions">
+                    
 
                     <button type="submit" class="btn-primary">
                         更新する
@@ -845,24 +1458,35 @@
             const bulkCategoryModal = document.getElementById('bulkCategoryModal');
             const cardDetailModal = document.getElementById('cardDetailModal');
 
-            const editCardForm = document.getElementById('cardEditForm');
-            const editQuestion = document.getElementById('edit_question');
-            const editAnswer = document.getElementById('edit_answer');
-            const editCategory = document.getElementById('edit_category_id');
-
             const categoryEditForm = document.getElementById('categoryEditForm');
             const editCategoryName = document.getElementById('edit_category_name');
 
             const detailQuestion = document.getElementById('detailQuestion');
             const detailAnswer = document.getElementById('detailAnswer');
+            const detailQuestionImageRow = document.getElementById('detailQuestionImageRow');
+            const detailQuestionImage = document.getElementById('detailQuestionImage');
+            const detailAnswerImageRow = document.getElementById('detailAnswerImageRow');
+            const detailAnswerImage = document.getElementById('detailAnswerImage');
             const detailCategory = document.getElementById('detailCategory');
             const detailStatusLevel = document.getElementById('detailStatusLevel');
             const detailStudyCount = document.getElementById('detailStudyCount');
             const detailReview = document.getElementById('detailReview');
             const cardDetailCloseButton = document.getElementById('cardDetailCloseButton');
-            const cardDetailCloseBottom = document.getElementById('cardDetailCloseBottom');
             const cardDetailEditButton = document.getElementById('cardDetailEditButton');
-            const cardDetailDeleteButton = document.getElementById('cardDetailDeleteButton');
+            const editCardForm = document.getElementById('cardEditForm');
+            const editQuestion = document.getElementById('edit_question');
+            const editAnswer = document.getElementById('edit_answer');
+            const editCategory = document.getElementById('edit_category_id');
+            const editQuestionImage = document.getElementById('edit_question_image');
+            const editAnswerImage = document.getElementById('edit_answer_image');
+            const editCurrentQuestionImage = document.getElementById('editCurrentQuestionImage');
+            const editCurrentQuestionImageImg = document.getElementById('editCurrentQuestionImageImg');
+            const editCurrentAnswerImage = document.getElementById('editCurrentAnswerImage');
+            const editCurrentAnswerImageImg = document.getElementById('editCurrentAnswerImageImg');
+            const editRemoveQuestionImage = document.getElementById('editRemoveQuestionImage');
+            const editRemoveAnswerImage = document.getElementById('editRemoveAnswerImage');
+            const removeCurrentQuestionImageButton = document.getElementById('removeCurrentQuestionImageButton');
+            const removeCurrentAnswerImageButton = document.getElementById('removeCurrentAnswerImageButton');
 
             let currentDetailCard = null;
 
@@ -940,16 +1564,66 @@
                 cardModal.classList.remove('show');
             };
 
-            window.openEditCardModal = function (
-                question,
-                answer,
-                categoryId,
-                updateUrl
-            ) {
-                editQuestion.value = question ?? '';
-                editAnswer.value = answer ?? '';
-                editCategory.value = categoryId ?? '';
-                editCardForm.action = updateUrl;
+            function resetPreview(previewId) {
+                const preview = document.getElementById(previewId);
+
+                if (!preview) {
+                    return;
+                }
+
+                const image = preview.querySelector('img');
+
+                preview.classList.remove('show');
+
+                if (image) {
+                    image.removeAttribute('src');
+                }
+            }
+
+            function setCurrentImage(wrapper, image, url) {
+                if (!wrapper || !image) {
+                    return;
+                }
+
+                if (url) {
+                    image.src = url;
+                    wrapper.hidden = false;
+                } else {
+                    image.removeAttribute('src');
+                    wrapper.hidden = true;
+                }
+            }
+
+            window.openEditCardModal = function (row) {
+                if (!row) {
+                    return;
+                }
+
+                editQuestion.value = row.dataset.question ?? '';
+                editAnswer.value = row.dataset.answer ?? '';
+                editCategory.value = row.dataset.categoryId ?? '';
+                editCardForm.action = row.dataset.updateUrl;
+
+                editQuestionImage.value = '';
+                editAnswerImage.value = '';
+                editRemoveQuestionImage.value = '0';
+                editRemoveAnswerImage.value = '0';
+
+                resetPreview('editQuestionImagePreview');
+                resetPreview('editAnswerImagePreview');
+
+                setCurrentImage(
+                    editCurrentQuestionImage,
+                    editCurrentQuestionImageImg,
+                    row.dataset.questionImage ?? ''
+                );
+
+                setCurrentImage(
+                    editCurrentAnswerImage,
+                    editCurrentAnswerImageImg,
+                    row.dataset.answerImage ?? ''
+                );
+
                 editCardModal.classList.add('show');
                 focusFirstField(editCardModal, '#edit_question');
             };
@@ -957,6 +1631,50 @@
             window.closeEditCardModal = function () {
                 editCardModal.classList.remove('show');
             };
+
+            if (removeCurrentQuestionImageButton) {
+                removeCurrentQuestionImageButton.addEventListener('click', function () {
+                    editRemoveQuestionImage.value = '1';
+                    editCurrentQuestionImage.hidden = true;
+                    editCurrentQuestionImageImg.removeAttribute('src');
+                });
+            }
+
+            if (removeCurrentAnswerImageButton) {
+                removeCurrentAnswerImageButton.addEventListener('click', function () {
+                    editRemoveAnswerImage.value = '1';
+                    editCurrentAnswerImage.hidden = true;
+                    editCurrentAnswerImageImg.removeAttribute('src');
+                });
+            }
+
+
+            document
+                .querySelectorAll(
+                    '#cardCreateModal input[type="file"][data-preview-target], ' +
+                    '#cardEditModal input[type="file"][data-preview-target]'
+                )
+                .forEach(function (input) {
+                    input.addEventListener('change', function () {
+                        const preview = document.getElementById(input.dataset.previewTarget);
+                        const image = preview?.querySelector('img');
+                        const file = input.files?.[0];
+
+                        if (!preview || !image) {
+                            return;
+                        }
+
+                        if (!file) {
+                            preview.classList.remove('show');
+                            image.removeAttribute('src');
+
+                            return;
+                        }
+
+                        image.src = URL.createObjectURL(file);
+                        preview.classList.add('show');
+                    });
+                });
 
             window.openCategoryModal = function () {
                 categoryModal.classList.add('show');
@@ -981,11 +1699,37 @@
                 editCategoryModal.classList.remove('show');
             };
 
+            function setDetailImage(rowElement, imageElement, imageUrl) {
+                if (!rowElement || !imageElement) {
+                    return;
+                }
+
+                if (imageUrl) {
+                    imageElement.src = imageUrl;
+                    rowElement.hidden = false;
+                } else {
+                    imageElement.removeAttribute('src');
+                    rowElement.hidden = true;
+                }
+            }
+
             function openCardDetail(row) {
                 currentDetailCard = row;
 
                 detailQuestion.textContent = row.dataset.question ?? '';
                 detailAnswer.textContent = row.dataset.answer ?? '';
+
+                setDetailImage(
+                    detailQuestionImageRow,
+                    detailQuestionImage,
+                    row.dataset.questionImage ?? ''
+                );
+
+                setDetailImage(
+                    detailAnswerImageRow,
+                    detailAnswerImage,
+                    row.dataset.answerImage ?? ''
+                );
                 detailCategory.textContent = row.dataset.category ?? '未分類';
                 detailStatusLevel.textContent =
                     (row.dataset.status ?? '') + ' / ' + (row.dataset.level ?? '');
@@ -1003,7 +1747,6 @@
             }
 
             cardDetailCloseButton.addEventListener('click', closeCardDetail);
-            cardDetailCloseBottom.addEventListener('click', closeCardDetail);
 
             cardDetailEditButton.addEventListener('click', function () {
                 if (!currentDetailCard) {
@@ -1013,13 +1756,7 @@
                 const detailCard = currentDetailCard;
 
                 closeCardDetail();
-
-                openEditCardModal(
-                    detailCard.dataset.question,
-                    detailCard.dataset.answer,
-                    detailCard.dataset.categoryId,
-                    detailCard.dataset.updateUrl
-                );
+                openEditCardModal(detailCard);
             });
 
             cardDetailDeleteButton.addEventListener('click', async function () {
@@ -1120,23 +1857,6 @@
                 '.option-wrapper',
                 '.option-menu'
             );
-
-            document
-                .querySelectorAll('.edit-card-btn')
-                .forEach(function (button) {
-                    button.addEventListener('click', function (event) {
-                        event.stopPropagation();
-
-                        openEditCardModal(
-                            button.dataset.question,
-                            button.dataset.answer,
-                            button.dataset.categoryId,
-                            button.dataset.updateUrl
-                        );
-
-                        closeAllMenus();
-                    });
-                });
 
             document
                 .querySelectorAll('.category-edit-btn')
@@ -1602,6 +2322,233 @@
                     }
                 }
             });
+
+            function transferFileToInput(input, file) {
+                if (!input || !file || !file.type.startsWith('image/')) {
+                    return;
+                }
+
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                input.files = dataTransfer.files;
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+
+            function clearSelectedImage(input, previewId) {
+                if (!input) {
+                    return;
+                }
+
+                input.value = '';
+                resetPreview(previewId);
+            }
+
+            [
+                ['clearCreateQuestionImage', 'question_image', 'createQuestionImagePreview'],
+                ['clearCreateAnswerImage', 'answer_image', 'createAnswerImagePreview'],
+                ['clearEditQuestionImage', 'edit_question_image', 'editQuestionImagePreview'],
+                ['clearEditAnswerImage', 'edit_answer_image', 'editAnswerImagePreview']
+            ].forEach(function (config) {
+                const button = document.getElementById(config[0]);
+                const input = document.getElementById(config[1]);
+
+                if (!button || !input) {
+                    return;
+                }
+
+                button.addEventListener('click', function () {
+                    clearSelectedImage(input, config[2]);
+                });
+            });
+
+            function setupDropPasteZone(input) {
+                if (!input) {
+                    return;
+                }
+
+                const box = input.closest('.image-upload-box');
+
+                if (!box) {
+                    return;
+                }
+
+                ['dragenter', 'dragover'].forEach(function (eventName) {
+                    box.addEventListener(eventName, function (event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        box.classList.add('is-dragover');
+                    });
+                });
+
+                ['dragleave', 'drop'].forEach(function (eventName) {
+                    box.addEventListener(eventName, function (event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        box.classList.remove('is-dragover');
+                    });
+                });
+
+                box.addEventListener('drop', function (event) {
+                    const file = Array.from(event.dataTransfer?.files ?? [])
+                        .find(function (item) {
+                            return item.type.startsWith('image/');
+                        });
+
+                    if (file) {
+                        transferFileToInput(input, file);
+                    }
+                });
+
+                box.addEventListener('paste', function (event) {
+                    const items = Array.from(event.clipboardData?.items ?? []);
+                    const imageItem = items.find(function (item) {
+                        return item.type.startsWith('image/');
+                    });
+
+                    if (!imageItem) {
+                        return;
+                    }
+
+                    event.preventDefault();
+
+                    const file = imageItem.getAsFile();
+
+                    if (file) {
+                        transferFileToInput(input, file);
+                    }
+                });
+
+                box.setAttribute('tabindex', '0');
+            }
+
+            [
+                document.getElementById('question_image'),
+                document.getElementById('answer_image'),
+                document.getElementById('edit_question_image'),
+                document.getElementById('edit_answer_image')
+            ].forEach(setupDropPasteZone);
+
+            function swapTextValues(first, second) {
+                const firstValue = first.value;
+                first.value = second.value;
+                second.value = firstValue;
+            }
+
+            function swapInputFiles(firstInput, secondInput) {
+                const firstFile = firstInput?.files?.[0] ?? null;
+                const secondFile = secondInput?.files?.[0] ?? null;
+
+                const firstTransfer = new DataTransfer();
+                const secondTransfer = new DataTransfer();
+
+                if (secondFile) {
+                    firstTransfer.items.add(secondFile);
+                }
+
+                if (firstFile) {
+                    secondTransfer.items.add(firstFile);
+                }
+
+                if (firstInput) {
+                    firstInput.files = firstTransfer.files;
+                    firstInput.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+
+                if (secondInput) {
+                    secondInput.files = secondTransfer.files;
+                    secondInput.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }
+
+            const createSwapButton = document.getElementById('createSwapButton');
+
+            if (createSwapButton) {
+                createSwapButton.addEventListener('click', function () {
+                    const question = document.getElementById('question');
+                    const answer = document.getElementById('answer');
+                    const questionImage = document.getElementById('question_image');
+                    const answerImage = document.getElementById('answer_image');
+
+                    swapTextValues(question, answer);
+                    swapInputFiles(questionImage, answerImage);
+                });
+            }
+
+            const editSwapButton = document.getElementById('editSwapButton');
+
+            if (editSwapButton) {
+                editSwapButton.addEventListener('click', function () {
+                    swapTextValues(editQuestion, editAnswer);
+                    swapInputFiles(editQuestionImage, editAnswerImage);
+
+                    const questionCurrentUrl = editCurrentQuestionImageImg?.getAttribute('src') || '';
+                    const answerCurrentUrl = editCurrentAnswerImageImg?.getAttribute('src') || '';
+
+                    setCurrentImage(
+                        editCurrentQuestionImage,
+                        editCurrentQuestionImageImg,
+                        answerCurrentUrl
+                    );
+
+                    setCurrentImage(
+                        editCurrentAnswerImage,
+                        editCurrentAnswerImageImg,
+                        questionCurrentUrl
+                    );
+
+                    const questionRemoveValue = editRemoveQuestionImage.value;
+                    editRemoveQuestionImage.value = editRemoveAnswerImage.value;
+                    editRemoveAnswerImage.value = questionRemoveValue;
+
+                    const questionRemoveChecked = editRemoveQuestionImage.checked;
+                    editRemoveQuestionImage.checked = editRemoveAnswerImage.checked;
+                    editRemoveAnswerImage.checked = questionRemoveChecked;
+                });
+            }
+
+            const continueCreateInput = document.getElementById('continueCreateInput');
+            const continueCreateButton = document.getElementById('continueCreateButton');
+            const createSubmitButton = document.getElementById('createSubmitButton');
+
+            if (continueCreateButton && continueCreateInput) {
+                continueCreateButton.addEventListener('click', function () {
+                    continueCreateInput.value = '1';
+                });
+            }
+
+            if (createSubmitButton && continueCreateInput) {
+                createSubmitButton.addEventListener('click', function () {
+                    continueCreateInput.value = '0';
+                });
+            }
+
+            @if (session('continue_create'))
+                window.setTimeout(function () {
+                    openCardModal();
+
+                    const createForm = document.getElementById('cardCreateForm');
+
+                    if (createForm) {
+                        createForm.reset();
+                    }
+
+                    resetPreview('createQuestionImagePreview');
+                    resetPreview('createAnswerImagePreview');
+
+                    const createCategory = document.getElementById('category_id');
+
+                    if (createCategory) {
+                        createCategory.value = @json($categoryId ?? '');
+                    }
+
+                    const questionField = document.getElementById('question');
+
+                    if (questionField) {
+                        questionField.focus();
+                    }
+                }, 50);
+            @endif
+
         });
     </script>
 </body>

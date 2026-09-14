@@ -13,6 +13,31 @@
     <link rel="stylesheet" href="{{ asset('css/study-waiting.css') }}">
     <link rel="stylesheet" href="{{ asset('css/study-complete.css') }}">
     <link rel="stylesheet" href="{{ asset('css/study-theme.css') }}?v=20260908-1">
+
+    <style>
+        .study-question-image,
+        .study-answer-image {
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        .study-question-image img,
+        .study-answer-image img {
+            display: block;
+            max-width: 100%;
+            max-height: 320px;
+            width: auto;
+            height: auto;
+            margin: 0 auto;
+            border-radius: 12px;
+            object-fit: contain;
+        }
+
+        .answer-text {
+            white-space: normal;
+        }
+    </style>
+
 </head>
 
 <body class="study-page">
@@ -280,14 +305,39 @@
 
                     <div class="question-area">
                         <span class="question-label">問題</span>
-                        <h2>{{ $card->question }}</h2>
+
+                        @if ($card->question)
+                            <h2>{{ $card->question }}</h2>
+                        @endif
+
+                        @if ($card->question_image)
+                            <div class="study-question-image">
+                                <img
+                                    src="{{ asset('storage/' . $card->question_image) }}"
+                                    alt="問題画像"
+                                >
+                            </div>
+                        @endif
                     </div>
 
                     <details class="answer-box">
                         <summary>答えを見る</summary>
 
                         <div class="answer-content">
-                            {{ $card->answer }}
+                            @if ($card->answer)
+                                <div class="answer-text">
+                                    {!! nl2br(e($card->answer)) !!}
+                                </div>
+                            @endif
+
+                            @if ($card->answer_image)
+                                <div class="study-answer-image">
+                                    <img
+                                        src="{{ asset('storage/' . $card->answer_image) }}"
+                                        alt="解答画像"
+                                    >
+                                </div>
+                            @endif
                         </div>
                     </details>
 

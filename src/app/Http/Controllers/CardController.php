@@ -67,6 +67,9 @@ class CardController extends Controller
             'return_category_id' => 'nullable|integer',
             'return_keyword' => 'nullable|string',
             'return_to' => 'nullable|in:study,cards',
+
+            // 「登録して次へ」用
+            'continue_create' => 'nullable|boolean',
         ]);
 
         $questionImagePath = $request->hasFile('question_image')
@@ -96,6 +99,21 @@ class CardController extends Controller
                 ->findOrFail($request->category_id);
 
             $card->categories()->attach($category->id);
+        }
+
+        /*
+         * 「登録して次へ」の場合
+         * カード一覧へ戻したあと、新規作成モーダルを自動で再表示します。
+         * 選択していたカテゴリも次のカードへ引き継ぎます。
+         */
+        if ($request->boolean('continue_create')) {
+            return redirect()
+                ->route('cards.index', $this->returnFilters($request))
+                ->with([
+                    'success' => 'カードを登録しました。続けて次のカードを作成できます。',
+                    'continue_create' => true,
+                    'continue_category_id' => $request->input('category_id'),
+                ]);
         }
 
         return redirect()

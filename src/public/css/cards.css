@@ -1418,7 +1418,8 @@ h1 {
  * タッチ端末ではホバーがないため、
  * 通常のタップ開閉 + 全幅表示に戻す
  */
-@media (hover: none), (pointer: coarse) {
+@media (hover: none),
+(pointer: coarse) {
     .category-list-panel {
         position: static;
         width: 100%;
@@ -1805,7 +1806,7 @@ h1 {
     margin: 0 0 22px;
 }
 
-.card-detail-list > div {
+.card-detail-list>div {
     display: grid;
     grid-template-columns: 120px minmax(0, 1fr);
     gap: 16px;
@@ -1958,7 +1959,7 @@ h1 {
         width: 100%;
     }
 
-    .card-detail-actions-right > * {
+    .card-detail-actions-right>* {
         flex: 1;
     }
 
@@ -2116,7 +2117,7 @@ h1 {
     margin-bottom: 0;
 }
 
-.card-detail-list > div {
+.card-detail-list>div {
     grid-template-columns: 112px minmax(0, 1fr);
     gap: 16px;
     min-height: 48px;
@@ -2135,7 +2136,7 @@ h1 {
 }
 
 /* 最後の情報行からボタンまでの余白 */
-.card-detail-list > div:last-child {
+.card-detail-list>div:last-child {
     border-bottom: none;
 }
 
@@ -2215,7 +2216,7 @@ h1 {
         padding: 22px 20px 18px;
     }
 
-    .card-detail-list > div {
+    .card-detail-list>div {
         grid-template-columns: 92px minmax(0, 1fr);
         gap: 12px;
     }
@@ -2231,7 +2232,7 @@ h1 {
         order: 1;
     }
 
-    .card-detail-actions-right > * {
+    .card-detail-actions-right>* {
         flex: 1;
     }
 
@@ -2264,7 +2265,7 @@ h1 {
 }
 
 /* 行間も文字サイズに合わせて少し確保 */
-.card-detail-list > div {
+.card-detail-list>div {
     min-height: 52px;
     padding: 13px 0;
 }
@@ -2389,19 +2390,15 @@ body.cards-page {
     color: #17365f;
 
     background:
-        radial-gradient(
-            circle at 37% 20%,
+        radial-gradient(circle at 37% 20%,
             rgba(255, 255, 255, 0.75) 0,
             rgba(255, 255, 255, 0.22) 25%,
-            transparent 48%
-        ),
-        linear-gradient(
-            112deg,
+            transparent 48%),
+        linear-gradient(112deg,
             #ccecff 0%,
             #dff5ff 38%,
             #dcf8f0 72%,
-            #e4fae9 100%
-        );
+            #e4fae9 100%);
 }
 
 /* 背景装飾 */
@@ -2582,11 +2579,9 @@ body.cards-page {
     height: 3px;
     border-radius: 999px 999px 0 0;
 
-    background: linear-gradient(
-        90deg,
-        #2c91f1,
-        #29b6df
-    );
+    background: linear-gradient(90deg,
+            #2c91f1,
+            #29b6df);
 }
 
 .app-nav-icon {
@@ -2714,11 +2709,9 @@ body.cards-page .table-wrap {
     border-color: rgba(255, 255, 255, 0.9);
 
     background:
-        linear-gradient(
-            145deg,
+        linear-gradient(145deg,
             rgba(255, 255, 255, 0.97),
-            rgba(255, 255, 255, 0.9)
-        );
+            rgba(255, 255, 255, 0.9));
 
     box-shadow:
         0 12px 30px rgba(65, 127, 158, 0.1);
@@ -2840,21 +2833,17 @@ body.cards-page .search-box button {
     min-height: 43px;
     border-radius: 9px;
 
-    background: linear-gradient(
-        100deg,
-        #257cf0,
-        #159af0
-    );
+    background: linear-gradient(100deg,
+            #257cf0,
+            #159af0);
 
     box-shadow: 0 6px 15px rgba(40, 130, 225, 0.17);
 }
 
 body.cards-page .search-box button:hover {
-    background: linear-gradient(
-        100deg,
-        #1d71e4,
-        #128de0
-    );
+    background: linear-gradient(100deg,
+            #1d71e4,
+            #128de0);
 }
 
 body.cards-page .search-box a {
@@ -2877,23 +2866,19 @@ body.cards-page .toolbar-selection-btn {
 body.cards-page .small-create-card-btn {
     min-height: 43px;
 
-    background: linear-gradient(
-        100deg,
-        #2196f3 0%,
-        #2eb4d7 50%,
-        #3bcf88 100%
-    );
+    background: linear-gradient(100deg,
+            #2196f3 0%,
+            #2eb4d7 50%,
+            #3bcf88 100%);
 
     box-shadow: 0 8px 18px rgba(43, 170, 192, 0.18);
 }
 
 body.cards-page .small-create-card-btn:hover {
-    background: linear-gradient(
-        100deg,
-        #168be8 0%,
-        #25a9cf 50%,
-        #31bf7b 100%
-    );
+    background: linear-gradient(100deg,
+            #168be8 0%,
+            #25a9cf 50%,
+            #31bf7b 100%);
 }
 
 /* 選択中バー */
@@ -2903,11 +2888,9 @@ body.cards-page .selection-mode .selection-toolbar {
 }
 
 body.cards-page .selection-status-icon {
-    background: linear-gradient(
-        135deg,
-        #2d90f0,
-        #27b3dd
-    );
+    background: linear-gradient(135deg,
+            #2d90f0,
+            #27b3dd);
 }
 
 body.cards-page .selection-cancel-btn,
@@ -2928,11 +2911,9 @@ body.cards-page .card-table {
 }
 
 body.cards-page .card-table th {
-    background: linear-gradient(
-        180deg,
-        #f5f8fb,
-        #eff4f7
-    );
+    background: linear-gradient(180deg,
+            #f5f8fb,
+            #eff4f7);
 
     color: #294565;
     border-bottom-color: #dde7ee;
@@ -2979,11 +2960,9 @@ body.cards-page .modal-box {
     border: 1px solid rgba(255, 255, 255, 0.88);
     border-radius: 17px;
 
-    background: linear-gradient(
-        155deg,
-        rgba(255, 255, 255, 0.99),
-        rgba(248, 254, 255, 0.96)
-    );
+    background: linear-gradient(155deg,
+            rgba(255, 255, 255, 0.99),
+            rgba(248, 254, 255, 0.96));
 
     box-shadow: 0 25px 70px rgba(31, 76, 108, 0.25);
 }
@@ -3009,19 +2988,15 @@ body.cards-page .form-group select:focus {
 }
 
 body.cards-page .btn-primary {
-    background: linear-gradient(
-        100deg,
-        #258ff0,
-        #38c78e
-    );
+    background: linear-gradient(100deg,
+            #258ff0,
+            #38c78e);
 }
 
 body.cards-page .btn-primary:hover {
-    background: linear-gradient(
-        100deg,
-        #187fdd,
-        #2dbb81
-    );
+    background: linear-gradient(100deg,
+            #187fdd,
+            #2dbb81);
 }
 
 body.cards-page .btn-secondary {
@@ -3145,3 +3120,10 @@ body.cards-page .category-section.is-category-open {
     z-index: 200;
 }
 
+/* =========================================================
+   カード詳細：画像がない場合は画像行ごと非表示
+========================================================= */
+
+.card-detail-list > div[hidden] {
+    display: none !important;
+}
