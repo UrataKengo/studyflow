@@ -435,6 +435,10 @@
             </div>
         @endif
 
+        @error('excel_file')
+            <div class="error-message">{{ $message }}</div>
+        @enderror
+
         @php
             $selectedCategory = $categories->first(function ($category) use ($categoryId) {
                 return (string) $category->id === (string) $categoryId;
@@ -598,6 +602,16 @@
                 </form>
 
                 <div class="card-tools-actions">
+                    <form action="{{ route('cards.import') }}" method="POST" enctype="multipart/form-data" style="margin:0;">
+                        @csrf
+                        <input type="file" name="excel_file" id="excelImportFile" accept=".xlsx" hidden
+                            onchange="if (this.files.length) this.form.requestSubmit();">
+                        <button type="button" class="selection-mode-btn toolbar-selection-btn"
+                            onclick="document.getElementById('excelImportFile').click()"
+                            title="問題・解答・カテゴリが入ったExcelを取り込む">
+                            Excel取り込み
+                        </button>
+                    </form>
                     <button type="button"
                         class="selection-mode-btn toolbar-selection-btn"
                         id="selectionModeButton">

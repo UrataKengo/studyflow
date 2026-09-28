@@ -4,9 +4,11 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     git \
-    libzip-dev
+    libzip-dev \
+    libpng-dev \
+    libonig-dev
 
-RUN docker-php-ext-install pdo_mysql zip
+RUN docker-php-ext-install pdo_mysql zip gd mbstring
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
