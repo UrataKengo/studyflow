@@ -7,6 +7,7 @@
     <title>カード編集 | StudyFlow</title>
 
     <link rel="stylesheet" href="{{ asset('css/cards-form.css') }}?v=20260908-unified">
+    <link rel="stylesheet" href="{{ asset('css/mobile.css') }}?v=20261006-1">
 </head>
 
 <body class="card-form-page-bg">

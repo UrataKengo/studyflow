@@ -310,6 +310,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile.css') }}?v=20261006-1">
 </head>
 
 <body class="cards-page">
@@ -808,21 +809,21 @@
                                     aria-label="{{ $card->question }} を選択">
                             </td>
 
-                            <td class="card-question-cell">
+                            <td class="card-question-cell" data-label="問題">
                                 {{ $card->question }}
                             </td>
 
-                            <td class="card-answer-cell">
+                            <td class="card-answer-cell" data-label="解答">
                                 {{ $card->answer }}
                             </td>
 
-                            <td>
+                            <td data-label="カテゴリ">
                                 <span class="category-badge">
                                     {{ $cardCategoryName }}
                                 </span>
                             </td>
 
-                            <td>
+                            <td data-label="状態 / レベル">
                                 <div class="status-level-wrap">
                                     <span class="status-badge status-{{ $statusKey }}">
                                         {{ $statusLabel }}
@@ -834,9 +835,9 @@
                                 </div>
                             </td>
 
-                            <td>{{ $card->study_count }} 回</td>
+                            <td data-label="学習回数">{{ $card->study_count }} 回</td>
 
-                            <td>
+                            <td data-label="次回復習日">
                                 <span class="review-badge {{ $reviewClass }}">
                                     {{ $reviewLabel }}
                                 </span>

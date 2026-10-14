@@ -103,6 +103,7 @@
         }
     </style>
 
+    <link rel="stylesheet" href="{{ asset('css/mobile.css') }}?v=20261006-1">
 </head>
 
 <body class="study-page">

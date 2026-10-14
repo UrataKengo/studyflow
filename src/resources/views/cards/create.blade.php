@@ -7,6 +7,7 @@
     <title>カード登録 | StudyFlow</title>
 
     <link rel="stylesheet" href="{{ asset('css/cards-form.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/mobile.css') }}?v=20261006-1">
 </head>
 
 <body>
